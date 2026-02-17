@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nabd- إنشاء حساب جديد</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="logo">Na<span>bd</span></a>
+  <ul class="nav-links">
+    <li><a href="login.html" class="btn-nav-outline">تسجيل الدخول</a></li>
+    <li><a href="#">المشاريع</a></li>
+    <li><a href="#">قصص النجاح</a></li>
+  </ul>
+</nav>
+
+<!-- AUTH PAGE -->
+<div class="auth-page">
+
+  <!-- LEFT BRAND PANEL -->
+  <div class="auth-brand">
+    <div class="auth-brand-logo">Na<span>bd</span></div>
+    <h2>انضم إلى مجتمع<br>العطاء والأمل</h2>
+    <p>سواء كنت متبرعًا تريد صنع الفرق، أو جمعية خيرية تسعى للوصول إلى أكبر عدد — هنا مكانك.</p>
+
+    <div class="account-types-info">
+      <div class="acc-type-info">
+        <div class="acc-type-icon donor">💛</div>
+        <div class="acc-type-text">
+          <h4>حساب متبرع</h4>
+          <p>تصفح المشاريع، تبرع بسهولة، وتابع أثر تبرعك لحظة بلحظة.</p>
+        </div>
+      </div>
+      <div class="acc-type-info">
+        <div class="acc-type-icon charity">🌿</div>
+        <div class="acc-type-text">
+          <h4>حساب جمعية خيرية</h4>
+          <p>أنشئ حملاتك، استقبل التبرعات، وأدر مشاريعك بكل شفافية.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM PANEL -->
+  <div class="auth-form-wrap">
+    <div class="auth-card">
+
+      <div class="auth-card-header">
+        <h2>إنشاء حساب جديد</h2>
+        <p>اختر نوع الحساب وأكمل بياناتك</p>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="form-progress">
+        <div class="prog-dot active" id="dot1"></div>
+        <div class="prog-dot" id="dot2"></div>
+        <div class="prog-dot" id="dot3"></div>
+      </div>
+
+      <!-- STEP 1: ACCOUNT TYPE -->
+      <div class="form-step active" id="step1">
+
+        <div class="type-selector">
+
+          <div class="type-card" id="type-donor" onclick="selectType('donor')">
+            <div class="type-card-check"></div>
+            <div class="type-card-icon">💛</div>
+            <h4>متبرع</h4>
+            <p>ساهم في المشاريع وصنع الأثر</p>
+          </div>
+
+          <div class="type-card" id="type-charity" onclick="selectType('charity')">
+            <div class="type-card-check"></div>
+            <div class="type-card-icon">🌿</div>
+            <h4>جمعية خيرية</h4>
+            <p>أدر حملاتك واستقبل التبرعات</p>
+          </div>
+
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>الاسم الأول</label>
+            <input type="text" class="form-input" placeholder="محمد">
+          </div>
+          <div class="form-group">
+            <label>الاسم الأخير</label>
+            <input type="text" class="form-input" placeholder="أحمد">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" class="form-input" placeholder="example@email.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>رقم الجوال</label>
+          <div class="input-wrap">
+            <span class="input-icon">📱</span>
+            <input type="tel" class="form-input" placeholder="05XXXXXXXX">
+          </div>
+        </div>
+
+        <button type="button" class="btn-submit" onclick="nextStep(2)">التالي ←</button>
+
+      </div>
+
+      <!-- STEP 2: ACCOUNT DETAILS (changes based on type) -->
+      <div class="form-step" id="step2">
+
+        <!-- DONOR fields -->
+        <div id="donor-fields">
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" class="form-input" placeholder="••••••••" id="pwdInput" oninput="checkPwd(this)">
+            </div>
+            <div class="pwd-strength">
+              <div class="pwd-bar" id="bar1"></div>
+              <div class="pwd-bar" id="bar2"></div>
+              <div class="pwd-bar" id="bar3"></div>
+              <span class="pwd-label" id="pwdLabel">ضعيف</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>تأكيد كلمة المرور</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" class="form-input" placeholder="••••••••">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>المدينة</label>
+            <div class="input-wrap">
+              <span class="input-icon">📍</span>
+              <input type="text" class="form-input" placeholder="الرياض">
+            </div>
+          </div>
+        </div>
+
+        <!-- CHARITY fields -->
+        <div id="charity-fields" style="display:none;">
+          <div class="field-badge">🌿 معلومات الجمعية الخيرية</div>
+
+          <div class="form-group">
+            <label>اسم الجمعية</label>
+            <div class="input-wrap">
+              <span class="input-icon">🏛️</span>
+              <input type="text" class="form-input" placeholder="جمعية نور الخير">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>رقم الترخيص الرسمي</label>
+            <div class="input-wrap">
+              <span class="input-icon">📋</span>
+              <input type="text" class="form-input" placeholder="12345678">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>مجال العمل</label>
+            <select class="form-input">
+              <option value="" disabled selected>اختر التخصص...</option>
+              <option>تعليم وثقافة</option>
+              <option>صحة ورعاية طبية</option>
+              <option>إغاثة طارئة</option>
+              <option>رعاية الأيتام</option>
+              <option>مياه وبيئة</option>
+              <option>تنمية مجتمعية</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" class="form-input" placeholder="••••••••" oninput="checkPwd(this)">
+            </div>
+            <div class="pwd-strength">
+              <div class="pwd-bar" id="bar1c"></div>
+              <div class="pwd-bar" id="bar2c"></div>
+              <div class="pwd-bar" id="bar3c"></div>
+              <span class="pwd-label" id="pwdLabelC">ضعيف</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>تأكيد كلمة المرور</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" class="form-input" placeholder="••••••••">
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:4px;">
+          <button type="button" class="btn-submit" style="background: #f0f0f0; color: var(--text-dark); box-shadow: none; flex: 0 0 80px; font-size:13px;" onclick="nextStep(1)">→ رجوع</button>
+          <button type="button" class="btn-submit" style="flex:1;" onclick="nextStep(3)">التالي ←</button>
+        </div>
+
+      </div>
+
+      <!-- STEP 3: CONFIRM -->
+      <div class="form-step" id="step3">
+
+        <div style="text-align:center; padding: 10px 0 24px;">
+          <div style="width:72px; height:72px; background: linear-gradient(135deg, var(--green-mid), var(--green-dark)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; margin: 0 auto 16px; box-shadow: 0 8px 24px rgba(46,139,87,.35);">✅</div>
+          <h3 style="font-size:18px; font-weight:800; color:var(--text-dark); margin-bottom:8px;">أنت على وشك الانضمام!</h3>
+          <p style="font-size:13px; color:#888; line-height:1.7;">راجع بياناتك ثم اضغط على زر إنشاء الحساب لإتمام التسجيل.</p>
+        </div>
+
+        <div style="background:#f8fffe; border:1.5px solid #d0ece0; border-radius:14px; padding:18px 20px; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:10px;">
+            <span style="color:#aaa; font-weight:600;">نوع الحساب</span>
+            <span id="confirm-type" style="font-weight:800; color:var(--green-mid);">متبرع</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:10px;">
+            <span style="color:#aaa; font-weight:600;">الاسم</span>
+            <span style="font-weight:700; color:var(--text-dark);">محمد أحمد</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:13px;">
+            <span style="color:#aaa; font-weight:600;">البريد الإلكتروني</span>
+            <span style="font-weight:700; color:var(--text-dark);">example@email.com</span>
+          </div>
+        </div>
+
+        <div class="terms-wrap">
+          <input type="checkbox" id="terms">
+          <label for="terms">
+            أوافق على <a href="#">الشروط والأحكام</a> و<a href="#">سياسة الخصوصية</a> الخاصة بمنصة CO.Gr
+          </label>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <button type="button" class="btn-submit" style="background: #f0f0f0; color: var(--text-dark); box-shadow: none; flex: 0 0 80px; font-size:13px;" onclick="nextStep(2)">→ رجوع</button>
+          <button type="submit" class="btn-submit" style="flex:1;">إنشاء الحساب ✨</button>
+        </div>
+
+      </div>
+
+      <!-- Bottom Links -->
+      <div class="auth-divider" style="margin-top:18px;">أو</div>
+      <div class="social-btns">
+        <button class="btn-social"><span>G</span> Google</button>
+        <button class="btn-social"><span>f</span> Facebook</button>
+      </div>
+
+      <div class="auth-switch">
+        لديك حساب بالفعل؟ <a href="login.html">سجّل دخولك</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
