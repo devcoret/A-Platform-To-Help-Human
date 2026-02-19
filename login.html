@@ -6,10 +6,50 @@
 <title>Nabd - تسجيل الدخول</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="login.Animation.css">
+<style>
+.toggle-password {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  user-select: none;
+  z-index: 2;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.input-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.input-wrap .form-input {
+  padding-right: 44px;
+  padding-left: 44px;
+}
+
+.lock-icon.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+</style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
   <a href="index.html" class="logo">Na<span>bd</span></a>
   <ul class="nav-links">
@@ -20,10 +60,8 @@
   </ul>
 </nav>
 
-<!-- AUTH PAGE -->
 <div class="auth-page">
 
-  <!-- LEFT BRAND PANEL -->
   <div class="auth-brand">
     <div class="auth-brand-logo">Na<span>bd</span></div>
     <h2>مرحبًا بعودتك<br>إلى منصة العطاء</h2>
@@ -49,7 +87,6 @@
     </div>
   </div>
 
-  <!-- RIGHT FORM PANEL -->
   <div class="auth-form-wrap">
     <div class="auth-card">
 
@@ -70,8 +107,9 @@
         <div class="form-group">
           <label>كلمة المرور</label>
           <div class="input-wrap">
-            <span class="input-icon">🔒</span>
-            <input type="password" class="form-input" placeholder="••••••••">
+            <span class="input-icon lock-icon" id="lock-icon">🔒</span>
+            <input type="password" class="form-input" placeholder="••••••••" id="login-password">
+            <span class="toggle-password" id="eye-icon" onclick="togglePassword()" style="display: none;">👁️</span>
           </div>
         </div>
 
@@ -106,12 +144,40 @@
 
 </div>
 
-<!-- decorative wave -->
 <div class="page-wave">
   <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
     <path d="M0,60 C300,110 600,10 900,60 C1100,95 1300,30 1440,60 L1440,120 L0,120 Z" fill="#5db870"/>
   </svg>
 </div>
+
+<script>
+const passwordInput = document.getElementById('login-password');
+const eyeIcon = document.getElementById('eye-icon');
+const lockIcon = document.getElementById('lock-icon');
+
+passwordInput.addEventListener('input', function() {
+  if (this.value.length > 0) {
+    lockIcon.classList.add('hidden');
+    eyeIcon.style.display = 'block';
+  } else {
+    lockIcon.classList.remove('hidden');
+    eyeIcon.style.display = 'none';
+    this.type = 'password';
+    eyeIcon.textContent = '👁️';
+  }
+});
+
+function togglePassword() {
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    eyeIcon.textContent = '🙈';
+  } else {
+    passwordInput.type = 'password';
+    eyeIcon.textContent = '👁️';
+  }
+}
+</script>
+
 
 </body>
 </html>
