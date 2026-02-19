@@ -1,0 +1,409 @@
+/* ==========================================================================
+   1. KEYFRAMES (Animations Library)
+   ========================================================================== */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.2; }
+  50% { transform: scale(1.1); opacity: 0.4; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-50px); }
+}
+
+@keyframes fillBar {
+  from { width: 0; }
+}
+
+@keyframes checkPop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(46,139,87,0.3); }
+  50% { box-shadow: 0 0 20px rgba(46,139,87,0.6); }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* ==========================================================================
+   2. NAVIGATION & LAYOUT
+   ========================================================================== */
+
+.navbar {
+  animation: slideDown 0.6s ease-out;
+}
+
+.logo {
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.4);
+  text-shadow: 0 0 10px rgba(200,168,75,0.5);
+}
+
+.nav-links a {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  right: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* ==========================================================================
+   3. AUTH BRANDING & INFO SECTION
+   ========================================================================== */
+
+.auth-brand-logo {
+  font-size: 56px;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.auth-brand h2 {
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.auth-brand p {
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.account-types-info {
+  animation: fadeInUp 0.8s ease-out 0.8s both;
+}
+
+.acc-type-info {
+  transition: all 0.3s ease;
+  animation: fadeInRight 0.6s ease-out both;
+}
+
+.acc-type-info:nth-child(1) { animation-delay: 1s; }
+.acc-type-info:nth-child(2) { animation-delay: 1.2s; }
+
+.acc-type-info:hover {
+  transform: translateX(-5px);
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.acc-type-icon {
+  animation: float 3s ease-in-out infinite;
+}
+
+.acc-type-info:nth-child(2) .acc-type-icon {
+  animation-delay: 0.5s;
+}
+
+/* ==========================================================================
+   4. AUTH CARD & FORM PROGRESS
+   ========================================================================== */
+
+.auth-card {
+  animation: fadeInRight 0.8s ease-out 0.3s both;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.3);
+}
+
+.auth-card-header {
+  animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+.form-progress {
+  animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+.prog-dot {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.prog-dot.active {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   5. TYPE CARDS (Selection)
+   ========================================================================== */
+
+.type-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+.type-card:nth-child(1) { animation-delay: 0.7s; }
+.type-card:nth-child(2) { animation-delay: 0.8s; }
+
+.type-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--green-mid);
+  box-shadow: 0 10px 30px rgba(46,139,87,0.15);
+}
+
+.type-card.active {
+  transform: scale(1.02);
+  border-color: var(--green-mid);
+  background: #f0fff6;
+  box-shadow: 0 0 0 3px rgba(46,139,87,0.15), 0 10px 30px rgba(46,139,87,0.2);
+}
+
+.type-card-check::after {
+  animation: checkPop 0.3s ease-out;
+}
+
+.type-card-icon {
+  transition: all 0.3s ease;
+}
+
+.type-card:hover .type-card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* ==========================================================================
+   6. FORM INPUTS & GROUPS
+   ========================================================================== */
+
+.form-step {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.form-step.active { display: block; }
+.form-step[style*="display:none"] { display: none; }
+
+#step1, #step2, #step3 {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.form-group {
+  animation: fadeInUp 0.5s ease-out both;
+  transition: all 0.3s ease;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+
+.form-group:focus-within {
+  transform: translateX(-5px);
+}
+
+.form-input {
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  transform: scale(1.02);
+  border-color: var(--green-mid);
+  box-shadow: 0 0 0 4px rgba(46,139,87,0.1);
+}
+
+select.form-input {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+select.form-input:hover {
+  border-color: var(--green-mid);
+}
+
+.input-icon {
+  transition: all 0.3s ease;
+}
+
+.form-input:focus + .input-icon {
+  transform: translateY(-50%) scale(1.2);
+  opacity: 0.8;
+}
+
+/* Password & Badges */
+.pwd-bar {
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pwd-bar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
+}
+
+.field-badge {
+  animation: fadeInUp 0.5s ease-out both;
+  animation-delay: 0.2s;
+}
+
+/* ==========================================================================
+   7. BUTTONS & ACTIONS
+   ========================================================================== */
+
+.btn-submit {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-submit::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; width: 0; height: 100%;
+  background: rgba(255,255,255,0.2);
+  transition: width 0.4s ease;
+  z-index: -1;
+}
+
+.btn-submit:hover::before { width: 100%; }
+
+.btn-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(46,139,87,0.5);
+}
+
+.btn-submit:active { transform: translateY(-1px); }
+
+.btn-submit[style*="background: #f0f0f0"] {
+  transition: all 0.3s ease;
+}
+
+.btn-submit[style*="background: #f0f0f0"]:hover {
+  background: #e0e0e0 !important;
+  transform: translateY(-2px);
+}
+
+/* Social Buttons */
+.social-btns {
+  animation: fadeInUp 0.6s ease-out both;
+  animation-delay: 0.4s;
+}
+
+.btn-social {
+  transition: all 0.3s ease;
+}
+
+.btn-social:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  border-color: var(--green-mid);
+}
+
+/* ==========================================================================
+   8. FOOTER LINKS & TERMS
+   ========================================================================== */
+
+.terms-wrap {
+  animation: fadeInUp 0.5s ease-out both;
+  animation-delay: 0.3s;
+}
+
+.terms-wrap input[type="checkbox"] {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.terms-wrap input[type="checkbox"]:hover { transform: scale(1.1); }
+
+.terms-wrap a, .auth-switch a {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.terms-wrap a::after, .auth-switch a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: 0;
+  width: 0;
+  height: 2px;
+  background: var(--green-mid);
+  transition: width 0.3s ease;
+}
+
+.terms-wrap a:hover::after, .auth-switch a:hover::after {
+  width: 100%;
+}
+
+.auth-switch {
+  animation: fadeInUp 0.6s ease-out both;
+  animation-delay: 0.5s;
+}
+
+/* ==========================================================================
+   9. MISCELLANEOUS (Specific Inline Styles replacements)
+   ========================================================================== */
+
+[style*="background:#f8fffe"] {
+  animation: scaleIn 0.5s ease-out both;
+  animation-delay: 0.2s;
+}
+
+[style*="width:72px; height:72px"] {
+  animation: float 3s ease-in-out infinite, glow 2s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   10. RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .auth-card {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+  }
+  
+  .acc-type-info {
+    animation: fadeInUp 0.6s ease-out both;
+  }
+}
