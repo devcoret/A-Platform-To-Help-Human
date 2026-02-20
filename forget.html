@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nabd - نسيت كلمة المرور</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="login.Animation.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+
+  /* NAVBAR */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1a6b3c;
+    letter-spacing: -1px;
+  }
+
+  .logo span { color: #c9a84c; }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: #b8963e; }
+
+  .btn-create {
+    background: #c9a84c;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-create:hover { background: #b8963e; }
+
+  /* Hamburger */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: #333;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* Mobile menu */
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 16px 24px;
+    gap: 12px;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  .mobile-menu .btn-create-mobile {
+    background: #c9a84c;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 440px 1fr;
+  }
+
+  /* LEFT PANEL - FORM */
+  .form-panel {
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 48px;
+    min-height: calc(100vh - 64px);
+  }
+
+  .form-panel h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+  }
+
+  .form-panel p.subtitle {
+    color: #777;
+    font-size: 0.92rem;
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  .email-icon-box {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .email-icon-box .icon-circle {
+    width: 80px;
+    height: 80px;
+    background: #e8f5ee;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .email-icon-box .icon-circle svg {
+    width: 40px;
+    height: 40px;
+    color: #1a6b3c;
+  }
+
+  label {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    text-align: right;
+  }
+
+  input[type="email"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.92rem;
+    color: #333;
+    background: #fafafa;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    text-align: right;
+    direction: ltr;
+  }
+
+  input[type="email"]::placeholder {
+    color: #bbb;
+    direction: ltr;
+  }
+
+  input[type="email"]:focus {
+    border-color: #1a6b3c;
+    box-shadow: 0 0 0 3px rgba(26,107,60,0.1);
+    background: #fff;
+  }
+
+  .field { margin-bottom: 24px; }
+
+  .btn-submit {
+    width: 100%;
+    background: #1a6b3c;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 4px;
+  }
+
+  .btn-submit:hover { background: #155730; }
+  .btn-submit:active { transform: scale(0.98); }
+
+  .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #777;
+  }
+
+  .back-link a {
+    color: #1a6b3c;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .back-link a:hover { text-decoration: underline; }
+
+  /* SUCCESS STATE */
+  .success-box {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .success-box .check-circle {
+    width: 80px;
+    height: 80px;
+    background: #e8f5ee;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    animation: pop 0.4s ease;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .success-box h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+  }
+
+  .success-box p {
+    color: #777;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  /* RIGHT PANEL - GREEN BG */
+  .green-panel {
+    background: linear-gradient(135deg, #1a6b3c 0%, #0f4d2b 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .green-panel::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: -80px;
+    width: 320px;
+    height: 320px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+
+  .green-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    right: -60px;
+    width: 240px;
+    height: 240px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+
+  .green-panel .brand {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .green-panel .brand span { color: #c9a84c; }
+
+  .green-panel h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .green-panel p {
+    color: rgba(255,255,255,0.75);
+    text-align: center;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    max-width: 380px;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stats {
+    display: flex;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat { text-align: center; }
+
+  .stat .num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #c9a84c;
+  }
+
+  .stat .lbl {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.7);
+    margin-top: 2px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+
+  /* Tablet landscape: 1024px */
+  @media (max-width: 1024px) {
+    main {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .form-panel {
+      padding: 48px 36px;
+    }
+
+    .green-panel {
+      padding: 48px 32px;
+    }
+
+    .green-panel h2 { font-size: 1.6rem; }
+    .green-panel .brand { font-size: 2.2rem; }
+  }
+
+  /* Tablet portrait: 768px */
+  @media (max-width: 768px) {
+    nav {
+      padding: 0 20px;
+    }
+
+    .nav-links { display: none; }
+    .btn-create { display: none; }
+    .hamburger { display: flex; }
+
+    main {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    /* Show green panel ABOVE form on mobile */
+    .green-panel {
+      order: -1;
+      padding: 40px 24px;
+      min-height: unset;
+    }
+
+    .green-panel .brand { font-size: 2rem; margin-bottom: 16px; }
+    .green-panel h2 { font-size: 1.4rem; margin-bottom: 10px; }
+    .green-panel p { font-size: 0.88rem; margin-bottom: 28px; }
+    .stats { gap: 24px; }
+    .stat .num { font-size: 1.3rem; }
+
+    .form-panel {
+      min-height: unset;
+      padding: 40px 24px;
+    }
+
+    .form-panel h1 { font-size: 1.6rem; }
+  }
+
+  /* Mobile: 480px */
+  @media (max-width: 480px) {
+    nav { padding: 0 16px; }
+
+    .form-panel {
+      padding: 32px 20px;
+    }
+
+    .form-panel h1 { font-size: 1.4rem; }
+    .form-panel p.subtitle { font-size: 0.88rem; margin-bottom: 24px; }
+
+    .email-icon-box .icon-circle {
+      width: 64px;
+      height: 64px;
+    }
+
+    .email-icon-box .icon-circle svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    input[type="email"] {
+      padding: 12px 14px;
+      font-size: 0.88rem;
+    }
+
+    .btn-submit {
+      padding: 13px;
+      font-size: 0.95rem;
+    }
+
+    .green-panel { padding: 32px 20px; }
+    .green-panel .brand { font-size: 1.8rem; }
+    .green-panel h2 { font-size: 1.2rem; }
+    .stats { gap: 16px; }
+    .stat .num { font-size: 1.1rem; }
+    .stat .lbl { font-size: 0.78rem; }
+
+    .success-box h2 { font-size: 1.3rem; }
+  }
+
+  /* Very small: 360px */
+  @media (max-width: 360px) {
+    .form-panel { padding: 24px 16px; }
+    .green-panel { padding: 28px 16px; }
+    .stats { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="logo">Na<span>bd</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#project">المشاريع</a></li>
+    <li><a href="index.html#story">قصص النجاح</a></li>
+        <li><a href="index.html#donation">أقسام التبرع</a></li>
+            <li><a href="login.html" class="btn-nav-outline">تسجيل الدخول</a></li>
+
+
+  </ul>
+</nav>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="القائمة">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#">المشاريع</a>
+  <a href="#">قصص النجاح</a>
+  <a href="#">أقسام التبرع</a>
+  <button class="btn-create-mobile">إنشاء حساب</button>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+
+    <!-- FORM STATE -->
+    <div id="formState">
+      <div class="email-icon-box">
+        <div class="icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+        </div>
+      </div>
+
+      <h1>نسيت كلمة المرور؟</h1>
+      <p class="subtitle">لا تقلق! أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.</p>
+
+      <div class="field">
+        <label for="email">البريد الإلكتروني</label>
+        <input type="email" id="email" placeholder="example@mail.com" autocomplete="email">
+      </div>
+
+      <button class="btn-submit" onclick="handleSubmit()">إرسال رابط الاسترداد</button>
+
+      <p class="back-link">تتذكر كلمة المرور؟ <a href="login.html">تسجيل الدخول</a></p>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-box" id="successState">
+      <div class="check-circle">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a6b3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2>تم الإرسال!</h2>
+      <p id="successMsg">تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد.</p>
+      <button class="btn-submit" style="max-width:300px;margin:0 auto;" onclick="window.location.href='login.html'">العودة لتسجيل الدخول</button>
+      <p class="back-link" style="margin-top:16px;">لم تستلم البريد؟ <a href="#" onclick="resend()">إعادة الإرسال</a></p>
+    </div>
+
+  </div>
+
+  <!-- GREEN PANEL -->
+  <div class="green-panel">
+    <div class="brand">Na<span>b</span>d</div>
+    <h2>استعد وصولك<br>إلى منصة العطاء</h2>
+    <p>سجّل دخولك للوصول إلى حملاتك، متابعة تبرعاتك، ومواصلة إحداث أثر حقيقي في حياة الناس.</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="num">+1200</div>
+        <div class="lbl">تبرع</div>
+      </div>
+      <div class="stat">
+        <div class="num">+145</div>
+        <div class="lbl">حملة نشطة</div>
+      </div>
+      <div class="stat">
+        <div class="num">+545</div>
+        <div class="lbl">عضو</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function handleSubmit() {
+    const email = document.getElementById('email').value.trim();
+    if (!email || !email.includes('@')) {
+      document.getElementById('email').style.borderColor = '#e53e3e';
+      document.getElementById('email').focus();
+      return;
+    }
+    document.getElementById('successMsg').textContent =
+      `تم إرسال رابط إعادة تعيين كلمة المرور إلى ${email}. يرجى التحقق من صندوق الوارد.`;
+    document.getElementById('formState').style.display = 'none';
+    document.getElementById('successState').style.display = 'block';
+  }
+
+  function resend() {
+    alert('تم إعادة إرسال البريد الإلكتروني!');
+  }
+
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

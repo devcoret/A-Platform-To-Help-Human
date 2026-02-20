@@ -1890,5 +1890,7 @@ body {
   .auth-card { padding: 36px 24px; }
 }
 
-
+html {
+  scroll-behavior: smooth;
+}
 
