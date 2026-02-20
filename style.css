@@ -36,7 +36,59 @@ body {
   top: 0;
   z-index: 1000;
 }
+/* ===== MOBILE MENU BUTTON ===== */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
 
+.menu-toggle span {
+  width: 25px;
+  height: 3px;
+  background: #fff;
+  border-radius: 3px;
+  transition: 0.3s;
+}
+
+/* الحالة المفتوحة */
+.menu-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ===== MOBILE NAV STYLE ===== */
+@media (max-width: 768px) {
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 62px;
+    right: 0;
+    width: 100%;
+    background: var(--green-dark);
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    display: none;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+}
 .logo {
   font-size: 22px;
   font-weight: 900;
@@ -1883,14 +1935,50 @@ body {
 @media (max-width: 900px) {
   .auth-brand { display: none; }
   .auth-form-wrap { flex: 1; }
-  .navbar { padding: 0 20px; }
+  
+  .navbar { 
+    padding: 0 20px;
+    display: flex; 
+    /* دي اللي بتخلي اللوجو في طرف والشرط في طرف */
+    justify-content: space-between; 
+    align-items: center;
+    flex-direction: row; /* لضمان الالتزام باتجاه الصفحة */
+  }
 }
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex; /* يظهر الهامبرجر */
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 62px;
+    left: 0;
+    width: 100%;
+    background: var(--green-dark);
+    padding: 20px;
+    gap: 20px;
+    text-align: center;
+    z-index: 1000;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  /* لو عايز تعكس الأماكن (اللوجو شمال والشرط يمين) فك التهميش عن السطرين الجايين */
+  /* .logo { order: 2; } */
+  /* .menu-toggle { order: 1; } */
+
+  .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .menu-toggle.active span:nth-child(2) { opacity: 0; }
+  .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+}
+
 @media (max-width: 480px) {
   .auth-form-wrap { padding: 20px 16px; }
   .auth-card { padding: 36px 24px; }
 }
-
-html {
-  scroll-behavior: smooth;
-}
-
