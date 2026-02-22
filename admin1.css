@@ -1,0 +1,104 @@
+:root {
+    --bg-color: #f9f6eb;
+    --card-bg: #ffffff;
+    --row-bg: #f4eac8;
+    --text-color: #333333;
+    --green-badge: #a3d18c;
+    --header-green: #2e5c38;
+}
+
+body {
+    font-family: 'Tajawai', sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+    /* display: flex; */
+    /* justify-content: center; */
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+h1 {
+    color: var(--header-green);
+    margin-bottom: 5px;
+    font-size: 28px;
+}
+
+p.subtitle {
+    color: #666;
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.donation-card {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    overflow: hidden;
+    text-align: right;
+    position: relative;
+}
+
+.badge-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+}
+
+.badge {
+    position: absolute;
+    top: 0;
+    right: 15px;
+    background-color: var(--green-badge);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 0 0 10px 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.data-row {
+    background-color: var(--row-bg);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #fff;
+}
+
+.data-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: bold;
+    color: #555;
+    font-size: 16px;
+}
+
+.value {
+    color: #333;
+    font-size: 16px;
+}
+
+@media(max-width:400px) {
+    .container {
+        padding: 20px 10px;
+    }
+
+    .data-row {
+        padding: 12px 10px;
+        font-size: 14px;
+    }
+}
