@@ -13,7 +13,12 @@
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Na<span>bd</span></div>
-  <ul class="nav-links">
+   <div class="menu-toggle" id="menuToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <ul class="nav-links" id="navLinks">
     <li><a href="#donation">أقسام التبرع</a></li>
     <li><a href="#story">قصص النجاح</a></li>
     <li><a href="#project">المشاريع</a></li>
@@ -304,5 +309,6 @@
   }, { threshold: 0.12 });
   reveals.forEach(el => observer.observe(el));
 </script>
+<script src="script.js"></script>
 </body>
 </html>
