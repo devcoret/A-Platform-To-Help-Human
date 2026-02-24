@@ -1,69 +1,547 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تبرع جديد</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-    <!-- <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="admin2.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nabd — لوحة الجمعية الخيرية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--green-dark:#0d4a27;--green-mid:#2e8b57;--green-stats:#5cb85c;--cream:#f5f0e4;--gold:#c8a84b;--gold-btn:#b8943a;--white:#ffffff;--text-dark:#1a1a1a;--text-gray:#555;--card-border:#e0ddd4;--sidebar-w:260px}
+    body{font-family:'Cairo',sans-serif;direction:rtl;background:#f0ece2;color:var(--text-dark);overflow-x:hidden;min-height:100vh}
+    .navbar{background:var(--green-dark);padding:0 18px;height:58px;display:flex;align-items:center;justify-content:space-between;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+    .nav-right{display:flex;align-items:center;gap:10px}
+    .logo{font-size:20px;font-weight:900;color:#fff;text-decoration:none}
+    .logo span{color:var(--gold)}
+    .charity-badge{display:flex;align-items:center;gap:6px;background:rgba(200,168,75,.18);border:1px solid rgba(200,168,75,.35);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--gold)}
+    .nav-actions{display:flex;align-items:center;gap:8px}
+    .nav-btn{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:rgba(255,255,255,.75);position:relative;transition:background .2s;flex-shrink:0}
+    .nav-btn:hover{background:rgba(255,255,255,.15)}
+    .notif-dot{position:absolute;top:6px;left:7px;width:8px;height:8px;background:#e53935;border-radius:50%;border:2px solid var(--green-dark);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+    .nav-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:4px 12px 4px 6px;cursor:pointer}
+    .nav-avatar{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green-mid),var(--green-dark));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+    .nav-user-name{font-size:12px;font-weight:700;color:#fff;display:block}
+    .nav-user-role{font-size:10px;color:rgba(255,255,255,.5);display:block}
+    .mob-menu-btn{display:none;width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:#fff;flex-shrink:0}
+    .layout{display:flex;padding-top:58px;min-height:100vh}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:850}
+    .sidebar-overlay.show{display:block}
+    .sidebar{width:var(--sidebar-w);background:var(--white);border-left:1px solid var(--card-border);position:fixed;top:58px;right:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;z-index:900;transition:transform .3s ease}
+    .sidebar::-webkit-scrollbar{width:4px}
+    .sidebar::-webkit-scrollbar-thumb{background:var(--card-border);border-radius:4px}
+    .sidebar-org{padding:18px 14px 14px;border-bottom:1px solid #f0ece3;text-align:center}
+    .org-logo{width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,#1a6b3c,#2e8b57);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;box-shadow:0 6px 20px rgba(46,139,87,.3)}
+    .org-name{font-size:14px;font-weight:900;color:var(--text-dark);display:block}
+    .org-type{font-size:11px;color:#aaa;display:block;margin-top:3px}
+    .verified-badge{display:inline-flex;align-items:center;gap:4px;background:#e8f5e9;border:1px solid #b2dfdb;color:var(--green-mid);font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;margin-top:8px}
+    .sidebar-nav{padding:10px 8px;flex:1}
+    .sidebar-lbl{font-size:10px;font-weight:800;color:#ccc;letter-spacing:2px;text-transform:uppercase;padding:8px 10px 5px;display:block}
+    .sl{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text-gray);font-size:13px;font-weight:600;margin-bottom:2px;transition:all .2s;cursor:pointer;position:relative;user-select:none}
+    .sl:hover{background:#f5f0e4;color:var(--green-mid)}
+    .sl.active{background:linear-gradient(135deg,#e8f5e9,#f0fff4);color:var(--green-mid);font-weight:800}
+    .sl.active::before{content:'';position:absolute;right:0;top:20%;bottom:20%;width:3px;background:var(--green-mid);border-radius:0 3px 3px 0}
+    .si{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+    .sb{margin-right:auto;background:#e53935;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px}
+    .sb.g{background:var(--green-mid)}
+    .sidebar-footer{padding:10px 8px;border-top:1px solid #f0ece3}
+    .sl.logout{color:#e53935}
+    .sl.logout:hover{background:#fff5f5;color:#c62828}
+    .main{margin-right:var(--sidebar-w);flex:1;padding:22px 26px;min-width:0}
+    .view{display:none}
+    .view.active{display:block}
+    .page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:10px;flex-wrap:wrap}
+    .page-title h1{font-size:21px;font-weight:900;color:var(--text-dark)}
+    .page-title p{font-size:12px;color:#aaa;margin-top:3px}
+    .hdr-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn-export{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--card-border);background:var(--white);color:var(--text-gray);padding:8px 15px;border-radius:9px;font-family:'Cairo',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .btn-export:hover{border-color:var(--green-mid);color:var(--green-mid)}
+    .btn-primary{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--green-mid),var(--green-dark));color:#fff;padding:8px 17px;border-radius:9px;font-family:'Cairo',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer;border:none;box-shadow:0 4px 14px rgba(46,139,87,.35);transition:transform .2s,box-shadow .2s;white-space:nowrap}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(46,139,87,.4)}
+    /* KPI */
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}
+    .kpi-card{background:var(--white);border-radius:15px;padding:17px 15px;border:1.5px solid var(--card-border);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s}
+    .kpi-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.09)}
+    .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .kpi-card:nth-child(1)::before{background:linear-gradient(to left,var(--green-mid),var(--green-stats))}
+    .kpi-card:nth-child(2)::before{background:linear-gradient(to left,var(--gold),var(--gold-btn))}
+    .kpi-card:nth-child(3)::before{background:linear-gradient(to left,#3b9fd1,#1a6b9f)}
+    .kpi-card:nth-child(4)::before{background:linear-gradient(to left,#e53935,#b71c1c)}
+    .kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px}
+    .kpi-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px}
+    .kpi-card:nth-child(1) .kpi-icon{background:#e8f5e9}
+    .kpi-card:nth-child(2) .kpi-icon{background:#fff8e8}
+    .kpi-card:nth-child(3) .kpi-icon{background:#e3f2fd}
+    .kpi-card:nth-child(4) .kpi-icon{background:#fce4ec}
+    .kpi-change{font-size:10px;font-weight:800;padding:3px 7px;border-radius:20px}
+    .kpi-change.up{background:#e8f5e9;color:var(--green-mid)}
+    .kpi-change.new{background:#fff8e8;color:var(--gold-btn)}
+    .kpi-num{font-size:23px;font-weight:900;color:var(--text-dark);display:block;line-height:1;margin-bottom:4px}
+    .kpi-label{font-size:10.5px;color:#aaa;font-weight:600}
+    /* FILTERS */
+    .filters-bar{display:flex;flex-direction:column;gap:10px;background:var(--white);border:1.5px solid var(--card-border);border-radius:13px;padding:13px 15px;margin-bottom:18px}
+    .filter-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+    .filter-label{font-size:12px;font-weight:700;color:#888;white-space:nowrap;flex-shrink:0}
+    .ftabs{display:flex;gap:6px;flex-wrap:wrap}
+    .ftab{border:1.5px solid var(--card-border);border-radius:22px;padding:5px 13px;font-family:'Cairo',sans-serif;font-size:11.5px;font-weight:700;color:#888;background:#fafafa;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .ftab:hover{border-color:var(--green-mid);color:var(--green-mid)}
+    .ftab.active{border-color:var(--green-mid);color:var(--green-mid);background:#f0fff6}
+    .search-mini{display:flex;align-items:center;gap:8px;border:1.5px solid var(--card-border);border-radius:9px;padding:7px 12px;background:#fafafa;width:100%}
+    .search-mini input{background:none;border:none;outline:none;font-family:'Cairo',sans-serif;font-size:13px;color:var(--text-dark);flex:1;text-align:right}
+    .search-mini input::placeholder{color:#ccc}
+    .sec-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:6px}
+    .sec-bar h2{font-size:15px;font-weight:900;color:var(--text-dark)}
+    .sec-bar span{font-size:11.5px;color:#aaa}
+    .sec-link{font-size:13px;color:var(--green-mid);font-weight:700;cursor:pointer;background:none;border:none;font-family:'Cairo',sans-serif}
+    /* DONATION CARDS — stacked */
+    .don-grid{display:flex;flex-direction:column;gap:14px;margin-bottom:26px}
+    .don-card{background:var(--white);border:1.5px solid var(--card-border);border-radius:15px;overflow:hidden;transition:transform .3s,box-shadow .3s;position:relative;animation:fadeUp .5s ease both}
+    .don-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.09)}
+    .don-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%}
+    .don-card.sn::before{background:var(--gold)}
+    .don-card.sv::before{background:#3b9fd1}
+    .don-card.sa::before{background:var(--green-mid)}
+    .don-card.sr::before{background:#e53935}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .dct{padding:13px 15px 11px;border-bottom:1px solid #f5f0e8;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+    .dav{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;flex-shrink:0}
+    .di{flex:1;min-width:110px}
+    .dn{font-size:13.5px;font-weight:800;color:var(--text-dark);display:block}
+    .dc{font-size:11px;color:#bbb;display:block;margin-top:2px}
+    .dl{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:#aaa;margin-top:3px}
+    .dsb{font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;align-self:flex-start}
+    .bn{background:#fff8e8;color:var(--gold-btn);border:1px solid #f0dfa0}
+    .bv{background:#e3f2fd;color:#1976d2;border:1px solid #bbdefb}
+    .ba{background:#e8f5e9;color:var(--green-mid);border:1px solid #b2dfdb}
+    .br{background:#ffebee;color:#e53935;border:1px solid #ffcdd2}
+    .dcb{padding:11px 15px}
+    .dtypes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+    .dchip{display:inline-flex;align-items:center;gap:4px;background:#f5f0e4;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#666}
+    .ddesc{font-size:12px;color:#888;line-height:1.7;margin-bottom:9px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .dimgs{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap}
+    .dimg{width:50px;height:50px;border-radius:10px;border:2px solid var(--card-border);background:#f0ece3;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;cursor:pointer;transition:transform .2s}
+    .dimg:hover{transform:scale(1.08)}
+    .dimgm{width:50px;height:50px;border-radius:10px;background:#f0ece3;border:2px solid var(--card-border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#888;flex-shrink:0}
+    .dmoney{display:flex;align-items:center;gap:7px;background:#f0fff6;border:1px solid #b2dfdb;border-radius:9px;padding:8px 12px;margin-bottom:9px}
+    .dmon-amt{font-size:14px;font-weight:900;color:var(--green-mid)}
+    .dmon-mtd{font-size:10.5px;color:#aaa;margin-right:3px}
+    .dcf{padding:10px 15px;border-top:1px solid #f5f0e8;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .dtime{font-size:10.5px;color:#ccc;margin-right:auto}
+    .abtn{padding:6px 12px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;border:1.5px solid;white-space:nowrap}
+    .abtn-a{border-color:var(--green-mid);color:var(--green-mid);background:none}
+    .abtn-a:hover{background:var(--green-mid);color:#fff}
+    .abtn-r{border-color:#e53935;color:#e53935;background:none}
+    .abtn-r:hover{background:#e53935;color:#fff}
+    .abtn-v{border-color:var(--card-border);color:#888;background:none}
+    .abtn-v:hover{border-color:#888;color:var(--text-dark)}
+    /* TABLE */
+    .tbl-card{background:var(--white);border-radius:15px;border:1.5px solid var(--card-border);overflow:hidden;margin-bottom:10px}
+    .tbl-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid #f5f0e8;flex-wrap:wrap;gap:7px}
+    .tbl-head h3{font-size:14px;font-weight:900;color:var(--text-dark)}
+    .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    table.dt{width:100%;border-collapse:collapse;min-width:580px}
+    table.dt th{background:#fafaf8;padding:10px 17px;font-size:11px;font-weight:800;color:#bbb;text-align:right;border-bottom:1px solid #f0ece3;white-space:nowrap}
+    table.dt td{padding:12px 17px;font-size:12.5px;color:var(--text-dark);border-bottom:1px solid #fafaf8;text-align:right}
+    table.dt tr:last-child td{border-bottom:none}
+    table.dt tr:hover td{background:#fdfcfa}
+    .tdav{width:31px;height:31px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0}
+    .tpill{display:inline-flex;align-items:center;gap:3px;background:#f5f0e4;border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;color:#777;margin-left:3px}
+    .spill{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;padding:3px 10px;border-radius:20px}
+    /* CAMPAIGNS — stacked */
+    .camp-grid{display:flex;flex-direction:column;gap:14px}
+    .camp-card{background:var(--white);border:1.5px solid var(--card-border);border-radius:15px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+    .camp-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.09)}
+    .camp-img{height:115px;display:flex;align-items:center;justify-content:center;font-size:42px;position:relative}
+    .camp-tag{position:absolute;top:10px;right:10px;background:var(--gold);color:#fff;font-size:10.5px;font-weight:700;padding:4px 11px;border-radius:20px}
+    .camp-live{position:absolute;top:10px;left:10px;background:var(--green-mid);color:#fff;font-size:10.5px;font-weight:700;padding:4px 11px;border-radius:20px}
+    .camp-body{padding:13px}
+    .camp-title{font-size:14px;font-weight:800;color:var(--text-dark);margin-bottom:4px}
+    .camp-desc{font-size:11.5px;color:#999;line-height:1.7;margin-bottom:9px}
+    .camp-prog-info{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:5px}
+    .camp-raised{font-weight:800;color:var(--green-mid)}
+    .camp-goal-lbl{color:#bbb}
+    .prog-bar{height:6px;background:#eee;border-radius:10px;overflow:hidden;margin-bottom:11px}
+    .prog-fill{height:100%;border-radius:10px;background:linear-gradient(to left,var(--green-stats),var(--green-mid))}
+    .camp-foot{display:flex;gap:7px}
+    .cbtn{flex:1;padding:8px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .2s;border:1.5px solid}
+    .cbtn-e{border-color:var(--green-mid);color:var(--green-mid);background:none}
+    .cbtn-e:hover{background:var(--green-mid);color:#fff}
+    .cbtn-s{border-color:#e53935;color:#e53935;background:none}
+    .cbtn-s:hover{background:#e53935;color:#fff}
+    /* STATS — stacked */
+    .stats-grid{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
+    .stat-card{background:var(--white);border:1.5px solid var(--card-border);border-radius:15px;padding:20px}
+    .stat-card h3{font-size:12.5px;font-weight:700;color:#aaa;margin-bottom:13px}
+    .sbar-grp{display:flex;flex-direction:column;gap:9px}
+    .sbar-item{display:flex;align-items:center;gap:10px;font-size:12.5px}
+    .sbar-lbl{width:95px;color:var(--text-gray);font-weight:600;flex-shrink:0}
+    .sbar-track{flex:1;height:8px;background:#f0ece3;border-radius:10px;overflow:hidden}
+    .sbar-fill{height:100%;border-radius:10px}
+    .sbar-val{width:36px;text-align:left;font-weight:800;color:var(--text-dark);font-size:11.5px}
+    .big-stat{text-align:center;padding:9px 0}
+    .big-num{font-size:38px;font-weight:900;color:var(--green-mid);display:block}
+    .big-lbl{font-size:12px;color:#aaa;margin-top:4px;display:block}
+    .mini-stats{display:flex;flex-direction:column}
+    .msr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #f5f0e8}
+    .msr:last-child{border-bottom:none}
+    .msr-l{font-size:13px;color:var(--text-gray)}
+    .msr-v{font-size:14px;font-weight:900;color:var(--text-dark)}
+    /* SETTINGS — stacked */
+    .settings-grid{display:flex;flex-direction:column;gap:16px}
+    .sc{background:var(--white);border:1.5px solid var(--card-border);border-radius:15px;padding:20px}
+    .sc h3{font-size:14px;font-weight:800;color:var(--text-dark);margin-bottom:16px;padding-bottom:9px;border-bottom:1px solid #f5f0e8}
+    .fg{margin-bottom:13px}
+    .fg label{display:block;font-size:12.5px;font-weight:700;color:var(--text-dark);margin-bottom:6px}
+    .fi{width:100%;padding:10px 12px;border:1.5px solid var(--card-border);border-radius:9px;font-family:'Cairo',sans-serif;font-size:13px;color:var(--text-dark);background:#fafafa;outline:none;text-align:right;transition:border-color .2s}
+    .fi:focus{border-color:var(--green-mid);background:#fff}
+    .fi::placeholder{color:#ccc}
+    textarea.fi{min-height:85px;resize:vertical}
+    .trow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f0e8;gap:10px}
+    .trow:last-of-type{border-bottom:none}
+    .tinfo h4{font-size:13px;font-weight:700;color:var(--text-dark)}
+    .tinfo p{font-size:11px;color:#bbb;margin-top:2px}
+    .tog{width:42px;height:23px;background:#ddd;border-radius:12px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+    .tog.on{background:var(--green-mid)}
+    .tog::after{content:'';position:absolute;top:3px;right:3px;width:17px;height:17px;background:#fff;border-radius:50%;transition:right .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .tog.on::after{right:calc(100% - 20px)}
+    .save-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--green-mid),var(--green-dark));color:#fff;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-top:16px;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 14px rgba(46,139,87,.3)}
+    .save-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(46,139,87,.4)}
+    /* NOTIFICATIONS */
+    .notif-panel{position:fixed;top:58px;left:0;width:min(350px,100vw);background:var(--white);border:1.5px solid var(--card-border);border-radius:0 0 15px 15px;box-shadow:0 20px 50px rgba(0,0,0,.15);z-index:2000;transform:translateY(-20px);opacity:0;pointer-events:none;transition:transform .3s,opacity .3s;max-height:80vh;overflow-y:auto}
+    .notif-panel.show{transform:translateY(0);opacity:1;pointer-events:all}
+    .np-head{display:flex;align-items:center;justify-content:space-between;padding:14px 17px;border-bottom:1px solid #f5f0e8;position:sticky;top:0;background:#fff;z-index:1}
+    .np-head h3{font-size:14px;font-weight:800}
+    .np-clear{font-size:11.5px;color:var(--green-mid);font-weight:700;cursor:pointer;background:none;border:none;font-family:'Cairo',sans-serif}
+    .ni{display:flex;gap:10px;padding:12px 17px;border-bottom:1px solid #fafaf8;cursor:pointer;transition:background .2s;position:relative}
+    .ni:hover{background:#fdfcfa}
+    .ni.unread{background:#f9fff9}
+    .ni.unread::before{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;background:var(--green-mid)}
+    .ni-icon{width:37px;height:37px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+    .ni-body{flex:1}
+    .ni-title{font-size:12.5px;font-weight:700;color:var(--text-dark);margin-bottom:2px}
+    .ni-sub{font-size:11px;color:#aaa;line-height:1.5}
+    .ni-time{font-size:10px;color:#ccc;margin-top:3px;display:block}
+    /* MODALS */
+    .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);z-index:9999;align-items:center;justify-content:center;padding:14px}
+    .ov.show{display:flex}
+    .modal{background:var(--white);border-radius:19px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.3);animation:slideUp .35s ease}
+    @keyframes slideUp{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f5f0e8;position:sticky;top:0;background:var(--white);z-index:1}
+    .modal-head h3{font-size:15px;font-weight:900;color:var(--text-dark)}
+    .mc{width:31px;height:31px;border-radius:8px;background:#f5f0e4;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:background .2s}
+    .mc:hover{background:#e8e0d0}
+    .modal-body{padding:18px 20px}
+    .ms{margin-bottom:18px}
+    .ms-title{font-size:10px;font-weight:800;color:#bbb;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:9px;display:block}
+    .mdc{display:flex;align-items:center;gap:11px;background:#fafaf8;border:1.5px solid var(--card-border);border-radius:11px;padding:13px;flex-wrap:wrap}
+    .mav{width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:#fff;flex-shrink:0}
+    .mdn{font-size:14px;font-weight:800;color:var(--text-dark)}
+    .mds{font-size:11.5px;color:#aaa;margin-top:2px}
+    .igrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .iitem{background:#fafaf8;border:1.5px solid var(--card-border);border-radius:10px;padding:10px 12px}
+    .iitem-l{font-size:10px;color:#bbb;font-weight:700;display:block;margin-bottom:3px}
+    .iitem-v{font-size:13px;font-weight:800;color:var(--text-dark)}
+    .mimgs{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .mimg{aspect-ratio:1;border-radius:10px;background:#f0ece3;display:flex;align-items:center;justify-content:center;font-size:28px;border:2px solid var(--card-border)}
+    .modal-acts{display:flex;gap:7px;padding:15px 20px;border-top:1px solid #f5f0e8;flex-wrap:wrap}
+    .mbtn{flex:1;min-width:75px;padding:10px;border-radius:9px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s;border:none;display:flex;align-items:center;justify-content:center;gap:6px}
+    .mbtn-a{background:linear-gradient(135deg,var(--green-mid),var(--green-dark));color:#fff;box-shadow:0 4px 14px rgba(46,139,87,.35)}
+    .mbtn-a:hover{transform:translateY(-1px)}
+    .mbtn-r{background:#fff0f0;color:#e53935;border:1.5px solid #ffcdd2}
+    .mbtn-r:hover{background:#e53935;color:#fff}
+    .mbtn-h{background:#f5f0e4;color:#888}
+    .mbtn-h:hover{background:#ede5d0}
+    /* EXPORT */
+    .exp-opts{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px}
+    .exp-opt{border:2px solid var(--card-border);border-radius:11px;padding:14px;text-align:center;cursor:pointer;transition:all .25s;background:#fafafa}
+    .exp-opt:hover{border-color:var(--green-mid);background:#f0fff6;transform:translateY(-2px)}
+    .exp-opt.sel{border-color:var(--green-mid);background:#f0fff6;box-shadow:0 0 0 3px rgba(46,139,87,.1)}
+    .exp-opt-ico{font-size:26px;display:block;margin-bottom:6px}
+    .exp-opt h4{font-size:12.5px;font-weight:800;color:var(--text-dark);margin-bottom:2px}
+    .exp-opt p{font-size:11px;color:#aaa}
+    .date-range{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}
+    .exp-prog{display:none;text-align:center;padding:16px}
+    .exp-prog.show{display:block}
+    .exp-bar-wrap{background:#f0ece3;border-radius:10px;height:7px;overflow:hidden;margin:9px 0}
+    .exp-bar-fill{height:100%;background:linear-gradient(to left,var(--green-stats),var(--green-mid));border-radius:10px;width:0;transition:width .1s linear}
+    /* CAMPAIGN FORM */
+    .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+    .cc-cnt{font-size:10.5px;color:#bbb;text-align:left;margin-top:3px}
+    .cat-chips{display:flex;gap:7px;flex-wrap:wrap}
+    .cchip{border:1.5px solid var(--card-border);border-radius:20px;padding:6px 12px;font-family:'Cairo',sans-serif;font-size:11.5px;font-weight:700;color:#888;background:#fafafa;cursor:pointer;transition:all .2s}
+    .cchip:hover{border-color:var(--green-mid);color:var(--green-mid)}
+    .cchip.sel{border-color:var(--green-mid);color:var(--green-mid);background:#f0fff6}
+    /* TOAST */
+    .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green-dark);color:#fff;padding:10px 24px;border-radius:30px;font-size:13px;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:99999;transition:transform .4s ease;white-space:nowrap;max-width:calc(100vw - 28px);text-align:center}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+    .toast.error{background:#c62828}
+    .toast.gold{background:var(--gold-btn)}
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+    .rv.show{opacity:1;transform:none}
+    #emptyState{text-align:center;padding:48px 20px;color:#ccc}
+    #emptyState span{font-size:42px;display:block;margin-bottom:9px}
+    #emptyState p{font-size:13.5px}
+    footer{background:#0a2a17;padding:36px 18px 18px;direction:rtl;margin-top:36px}
+    .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;max-width:860px;margin:0 auto 26px}
+    .fl{font-size:19px;font-weight:900;color:#fff;display:block;margin-bottom:9px}
+    .fl span{color:var(--gold)}
+    .fp{font-size:12px;color:rgba(255,255,255,.4);line-height:1.85}
+    .fc h4{font-size:12.5px;font-weight:800;color:#fff;margin-bottom:12px}
+    .fc ul{list-style:none}
+    .fc ul li{margin-bottom:7px}
+    .fc ul li a{text-decoration:none;font-size:12px;color:rgba(255,255,255,.4);transition:color .2s}
+    .fc ul li a:hover{color:var(--gold)}
+    .fbot{max-width:860px;margin:0 auto;border-top:1px solid rgba(255,255,255,.08);padding-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+    .fbot p{font-size:11px;color:rgba(255,255,255,.25)}
+    .soc{display:flex;gap:7px}
+    .soc a{width:30px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.45);font-size:11.5px;text-decoration:none;transition:background .2s,border-color .2s}
+    .soc a:hover{background:var(--green-mid);border-color:var(--green-mid);color:#fff}
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:1050px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:900px){
+      .mob-menu-btn{display:flex}
+      .sidebar{transform:translateX(100%)}
+      .sidebar.open{transform:translateX(0)}
+      .main{margin-right:0;padding:16px 13px}
+      .charity-badge{display:none}
+    }
+    @media(max-width:480px){
+      .kpi-grid{grid-template-columns:1fr 1fr;gap:10px}
+      .page-header{flex-direction:column}
+      .hdr-actions{width:100%}
+      .nav-user-name,.nav-user-role{display:none}
+      .exp-opts{grid-template-columns:1fr}
+      .date-range{grid-template-columns:1fr}
+      .form-row2{grid-template-columns:1fr}
+      .igrid{grid-template-columns:1fr}
+      .footer-grid{grid-template-columns:1fr;gap:20px}
+    }
+    @media(max-width:360px){.kpi-num{font-size:20px}.kpi-label{font-size:9.5px}}
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <h2 class="page-title">تبرع جديد</h2>
-        <form id="donationForm">
-            <div class="form-group">
-                <label for="donationType">نوع التبرع</label>
-                <select name="donationType" id="donationType">
-                    <option value="disabled selected">اختر النوع</option>
-                    <option value="education">تعليم</option>
-                    <option value="health">صحة</option>
-                    <option value="food">غذاء</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="phoneNumber">رقم الهاتف</label>
-                <input type="tel" name="phoneNumber" placeholder="0157476859">
-            </div>
-            <div class="form-group">
-                <label for="donorName">اسم المتبرع</label>
-                <input type="text" id="donorName" name="donorName" placeholder="مها محمد">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="donationCount">عدد المرات التبرع</label>
-                    <input type="text" id="donationCount" name="donationCount" placeholder="المره الاولى">
-                </div>
-                <div class="form-group">
-                    <label for="quantity">الكمية</label>
-                    <input type="text" id="quantity" name="quantity" placeholder="مثال :100 شنطة مدرسية">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="date">التاريخ</label>
-                <input type="date" name="date" id="date">
-            </div>
-            <div class="form-group">
-                <label for="imageUpload">صور تم رفعها</label>
-                <input type="file" id="imageUpload" name="imageUpload" multiple accept="image/*">
-                <div class="image-preview-container" id="imagePreviewContainer">
-                </div>
-            </div>
-            <button type="submit" class="submit-btn">ارسال التبرع</button>
-        </form>
+<nav class="navbar">
+  <div class="nav-right">
+    <div class="mob-menu-btn" onclick="toggleSidebar()" id="menuBtn">☰</div>
+    <a href="#" class="logo">Na<span>bd</span></a>
+    <div class="charity-badge">🏛️ جمعية خيرية موثقة</div>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-btn" onclick="toggleNotif()" id="notifBtn">🔔<span class="notif-dot" id="notifDot"></span></div>
+    <div class="nav-user">
+      <div class="nav-user-info"><span class="nav-user-name">جمعية النور الخيرية</span><span class="nav-user-role">مشرف</span></div>
+      <div class="nav-avatar">🏛️</div>
     </div>
-    <script src="admin2.js"></script>
-</body>
+  </div>
+</nav>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="notif-panel" id="notifPanel">
+  <div class="np-head">
+    <h3>🔔 الإشعارات <span id="unreadBadge" style="background:#e53935;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;margin-right:6px">5</span></h3>
+    <button class="np-clear" onclick="markAllRead()">تحديد الكل كمقروء</button>
+  </div>
+  <div id="notifList">
+    <div class="ni unread" onclick="readNotif(this)"><div class="ni-icon" style="background:#e8f5e9">📦</div><div class="ni-body"><div class="ni-title">تبرع جديد من سارة أحمد</div><div class="ni-sub">ملابس نسائية + مواد غذائية — الرياض</div><span class="ni-time">منذ 10 دقائق</span></div></div>
+    <div class="ni unread" onclick="readNotif(this)"><div class="ni-icon" style="background:#fff8e8">💰</div><div class="ni-body"><div class="ni-title">تبرع مالي جديد — 1,000 ر.س</div><div class="ni-sub">من محمد الحربي لحملة بئر المياه</div><span class="ni-time">منذ 25 دقيقة</span></div></div>
+    <div class="ni unread" onclick="readNotif(this)"><div class="ni-icon" style="background:#e3f2fd">📊</div><div class="ni-body"><div class="ni-title">تقرير الشهر جاهز</div><div class="ni-sub">تقرير فبراير 2026 متاح للتحميل</div><span class="ni-time">منذ ساعة</span></div></div>
+    <div class="ni unread" onclick="readNotif(this)"><div class="ni-icon" style="background:#fce4ec">🎯</div><div class="ni-body"><div class="ni-title">حملة "بئر المياه" وصلت 93%</div><div class="ni-sub">تحتاج 2,000 ر.س فقط لإكمال الهدف!</div><span class="ni-time">منذ 3 ساعات</span></div></div>
+    <div class="ni unread" onclick="readNotif(this)"><div class="ni-icon" style="background:#e8f5e9">✅</div><div class="ni-body"><div class="ni-title">تم التحقق من الجمعية بنجاح</div><div class="ni-sub">شهادة التوثيق صالحة حتى ديسمبر 2026</div><span class="ni-time">أمس</span></div></div>
+    <div class="ni" onclick="readNotif(this)"><div class="ni-icon" style="background:#f5f0e4">👥</div><div class="ni-body"><div class="ni-title">متبرع جديد انضم للمنصة</div><div class="ni-sub">خالد العمري — الرياض</div><span class="ni-time">قبل يومين</span></div></div>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-org">
+    <div class="org-logo">🏛️</div>
+    <span class="org-name">جمعية النور الخيرية</span>
+    <span class="org-type">جمعية خيرية — الرياض</span>
+    <div class="verified-badge">✅ موثقة ومعتمدة</div>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="sidebar-lbl">الرئيسية</span>
+    <div class="sl active" onclick="showView('dash',this)"><span class="si">🏠</span> لوحة التحكم</div>
+    <div class="sl" onclick="showView('don',this)"><span class="si">📥</span> التبرعات الواردة<span class="sb" id="sb-new">7</span></div>
+    <div class="sl" onclick="showView('acc',this)"><span class="si">✅</span> التبرعات المقبولة<span class="sb g">24</span></div>
+    <div class="sl" onclick="showView('stats',this)"><span class="si">📊</span> الإحصائيات</div>
+    <span class="sidebar-lbl" style="margin-top:8px">المشاريع</span>
+    <div class="sl" onclick="showView('camp',this)"><span class="si">📋</span> حملاتنا الفعالة</div>
+    <div class="sl" onclick="openCampModal();setActive(this)"><span class="si">➕</span> إضافة حملة جديدة</div>
+    <div class="sl" onclick="showView('arch',this)"><span class="si">📁</span> أرشيف الحملات</div>
+    <span class="sidebar-lbl" style="margin-top:8px">الجمعية</span>
+    <div class="sl" onclick="showView('profile',this)"><span class="si">🏛️</span> ملف الجمعية</div>
+    <div class="sl" onclick="showView('settings',this)"><span class="si">⚙️</span> الإعدادات</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sl logout" onclick="if(confirm('تأكيد تسجيل الخروج؟'))showToast('👋 تم تسجيل الخروج','gold')"><span class="si">🚪</span> تسجيل الخروج</div>
+  </div>
+</aside>
+<main class="main">
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dash">
+    <div class="page-header rv">
+      <div class="page-title"><h1>لوحة تحكم الجمعية 🏛️</h1><p>جمعية النور الخيرية — الاثنين 23 فبراير 2026</p></div>
+      <div class="hdr-actions"><button class="btn-primary" onclick="openCampModal()">➕ إضافة حملة</button></div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card rv"><div class="kpi-top"><div class="kpi-icon">📥</div><span class="kpi-change new">↑ 3 اليوم</span></div><span class="kpi-num">7</span><span class="kpi-label">تبرعات جديدة بانتظار المراجعة</span></div>
+      <div class="kpi-card rv" style="transition-delay:.07s"><div class="kpi-top"><div class="kpi-icon">💰</div><span class="kpi-change up">↑ 18%</span></div><span class="kpi-num">38,450</span><span class="kpi-label">إجمالي التبرعات المالية (ر.س)</span></div>
+      <div class="kpi-card rv" style="transition-delay:.14s"><div class="kpi-top"><div class="kpi-icon">✅</div><span class="kpi-change up">↑ 5</span></div><span class="kpi-num">24</span><span class="kpi-label">تبرعات مقبولة هذا الشهر</span></div>
+      <div class="kpi-card rv" style="transition-delay:.21s"><div class="kpi-top"><div class="kpi-icon">👥</div><span class="kpi-change up">↑ 12</span></div><span class="kpi-num">143</span><span class="kpi-label">إجمالي المتبرعين</span></div>
+    </div>
+    <div class="sec-bar rv"><h2>📥 آخر التبرعات الواردة</h2><button class="sec-link" onclick="showView('don',document.querySelector('[onclick*=\'don\']'))">عرض الكل ←</button></div>
+    <div class="don-grid">
+      <div class="don-card sn rv" data-status="new" data-types="clothes food" data-donor="سارة أحمد المطيري">
+        <div class="dct"><div class="dav" style="background:linear-gradient(135deg,#e91e63,#c2185b)">س</div><div class="di"><span class="dn">سارة أحمد المطيري</span><span class="dc">📱 0501234567</span><span class="dl">📍 الرياض</span></div><span class="dsb bn">🟡 جديد</span></div>
+        <div class="dcb"><div class="dtypes"><span class="dchip">👕 ملابس</span><span class="dchip">🥗 غذاء</span></div><p class="ddesc">15 قطعة ملابس نسائية مستعملة بحالة ممتازة + كرتون مواد غذائية جافة صالحة حتى 2027</p><div class="dimgs"><div class="dimg">👗</div><div class="dimg">👚</div><div class="dimg">🥫</div><div class="dimgm">+2</div></div></div>
+        <div class="dcf"><span class="dtime">🕒 منذ ساعتين</span><button class="abtn abtn-a" onclick="acceptCard(this)">✓ قبول</button><button class="abtn abtn-r" onclick="rejectCard(this)">✕ رفض</button><button class="abtn abtn-v" onclick="openModal('سارة أحمد المطيري','س','#e91e63','ملابس + غذاء','الرياض','0501234567')">👁 عرض</button></div>
+      </div>
+      <div class="don-card sn rv" data-status="new" data-types="money" data-donor="محمد الحربي">
+        <div class="dct"><div class="dav" style="background:linear-gradient(135deg,#1976d2,#0d47a1)">م</div><div class="di"><span class="dn">محمد الحربي</span><span class="dc">📱 0554321987</span><span class="dl">📍 جدة</span></div><span class="dsb bn">🟡 جديد</span></div>
+        <div class="dcb"><div class="dtypes"><span class="dchip">💵 مالي</span></div><p class="ddesc">تبرع لدعم حملة بئر المياه النظيفة في المناطق النائية</p><div class="dmoney"><span>💰</span><span class="dmon-amt">1,000 ر.س</span><span class="dmon-mtd">بطاقة بنكية</span></div></div>
+        <div class="dcf"><span class="dtime">🕒 منذ 3 ساعات</span><button class="abtn abtn-a" onclick="acceptCard(this)">✓ قبول</button><button class="abtn abtn-r" onclick="rejectCard(this)">✕ رفض</button><button class="abtn abtn-v" onclick="openModal('محمد الحربي','م','#1976d2','تبرع مالي 1000 ر.س','جدة','0554321987')">👁 عرض</button></div>
+      </div>
+      <div class="don-card sv rv" data-status="reviewed" data-types="items" data-donor="خالد الشمري">
+        <div class="dct"><div class="dav" style="background:linear-gradient(135deg,#f57f17,#e65100)">خ</div><div class="di"><span class="dn">خالد الشمري</span><span class="dc">📱 0533221100</span><span class="dl">📍 الرياض</span></div><span class="dsb bv">🔵 قيد المراجعة</span></div>
+        <div class="dcb"><div class="dtypes"><span class="dchip">📦 أثاث</span></div><p class="ddesc">طقم كنب 3 قطع + طاولة قهوة خشبية بحالة جيدة جداً</p><div class="dimgs"><div class="dimg">🛋️</div><div class="dimg">🪑</div><div class="dimgm">+3</div></div></div>
+        <div class="dcf"><span class="dtime">🕒 أمس</span><button class="abtn abtn-a" onclick="acceptCard(this)">✓ قبول</button><button class="abtn abtn-r" onclick="rejectCard(this)">✕ رفض</button><button class="abtn abtn-v" onclick="openModal('خالد الشمري','خ','#f57f17','أثاث','الرياض','0533221100')">👁 عرض</button></div>
+      </div>
+    </div>
+  </div>
+  <!-- DONATIONS -->
+  <div class="view" id="view-don">
+    <div class="page-header"><div class="page-title"><h1>📥 التبرعات الواردة</h1><p>7 تبرع — 23 فبراير 2026</p></div><div class="hdr-actions"><button class="btn-export" onclick="openExport()">📥 تصدير تقرير</button></div></div>
+    <div class="filters-bar">
+      <div class="filter-row"><span class="filter-label">الحالة:</span><div class="ftabs" id="stabs"><div class="ftab active" onclick="fStat(this,'all')">الكل</div><div class="ftab" onclick="fStat(this,'new')">🟡 جديد</div><div class="ftab" onclick="fStat(this,'reviewed')">🔵 مراجعة</div><div class="ftab" onclick="fStat(this,'accepted')">🟢 مقبول</div><div class="ftab" onclick="fStat(this,'rejected')">🔴 مرفوض</div></div></div>
+      <div class="filter-row"><span class="filter-label">النوع:</span><div class="ftabs" id="ttabs"><div class="ftab active" onclick="fType(this,'all')">الكل</div><div class="ftab" onclick="fType(this,'clothes')">👕 هدوم</div><div class="ftab" onclick="fType(this,'food')">🥗 أكل</div><div class="ftab" onclick="fType(this,'items')">📦 أغراض</div><div class="ftab" onclick="fType(this,'money')">💵 مالي</div></div></div>
+      <div class="search-mini"><span>🔍</span><input type="text" placeholder="ابحث باسم المتبرع..." oninput="applyF()"/></div>
+    </div>
+    <div class="sec-bar"><h2>التبرعات</h2><span id="don-cnt">7 تبرع</span></div>
+    <div class="don-grid" id="donGrid">
+      <div class="don-card sn" data-status="new" data-types="clothes food" data-donor="سارة أحمد المطيري"><div class="dct"><div class="dav" style="background:linear-gradient(135deg,#e91e63,#c2185b)">س</div><div class="di"><span class="dn">سارة أحمد المطيري</span><span class="dc">📱 0501234567</span><span class="dl">📍 الرياض</span></div><span class="dsb bn">🟡 جديد</span></div><div class="dcb"><div class="dtypes"><span class="dchip">👕 ملابس</span><span class="dchip">🥗 غذاء</span></div><p class="ddesc">15 قطعة ملابس نسائية بحالة ممتازة + كرتون مواد غذائية جافة</p><div class="dimgs"><div class="dimg">👗</div><div class="dimg">👚</div><div class="dimg">🥫</div><div class="dimgm">+2</div></div></div><div class="dcf"><span class="dtime">🕒 منذ ساعتين</span><button class="abtn abtn-a" onclick="acceptCard(this)">✓ قبول</button><button class="abtn abtn-r" onclick="rejectCard(this)">✕ رفض</button><button class="abtn abtn-v" onclick="openModal('سارة أحمد المطيري','س','#e91e63','ملابس + غذاء','الرياض','0501234567')">👁 عرض</button></div></div>
+      <div class="don-card sn" data-status="new" data-types="money" data-donor="محمد الحربي"><div class="dct"><div class="dav" style="background:linear-gradient(135deg,#1976d2,#0d47a1)">م</div><div class="di"><span class="dn">محمد الحربي</span><span class="dc">📱 0554321987</span><span class="dl">📍 جدة</span></div><span class="dsb bn">🟡 جديد</span></div><div class="dcb"><div class="dtypes"><span class="dchip">💵 مالي</span></div><p class="ddesc">تبرع لدعم حملة بئر المياه في المناطق النائية</p><div class="dmoney"><span>💰</span><span class="dmon-amt">1,000 ر.س</span><span class="dmon-mtd">بطاقة بنكية</span></div></div><div class="dcf"><span class="dtime">🕒 منذ 3 ساعات</span><button class="abtn abtn-a" onclick="acceptCard(this)">✓ قبول</button><button class="abtn abtn-r" onclick="rejectCard(this)">✕ رفض</button><button class="abtn abtn-v" onclick="openModal('محمد الحربي','م','#1976d2','مالي 1000 ر.س','جدة','0554321987')">👁 عرض</button></div></div>
+      <div class="don-card sv" data-status="reviewed" data-types="items" data-donor="خالد الشمري"><div class="dct"><div class="dav" style="background:linear-gradient(135deg,#f57f17,#e65100)">خ</div><div class="di"><span class="dn">خالد الشمري</span><span class="dc">📱 0533221100</span><span class="dl">📍 الرياض</span></div><span class="dsb bv">🔵 قيد المراجعة</span></div><div class="dcb"><div class="dtypes"><span class="dchip">📦 أثاث</span></div><p class="ddesc">طقم كنب + طاولة قهوة خشبية بحالة جيدة جداً</p><div class="dimgs"><div class="dimg">🛋️</div><div class="dimg">🪑</div><div class="dimgm">+3</div></div></div><div class="dcf"><span class="dtime">🕒 أمس</span><button class="abtn abtn-a" onclick="acceptCard(this)">✓ قبول</button><button class="abtn abtn-r" onclick="rejectCard(this)">✕ رفض</button><button class="abtn abtn-v" onclick="openModal('خالد الشمري','خ','#f57f17','أثاث','الرياض','0533221100')">👁 عرض</button></div></div>
+      <div class="don-card sn" data-status="new" data-types="food" data-donor="فاطمة الزهراء"><div class="dct"><div class="dav" style="background:linear-gradient(135deg,#388e3c,#1b5e20)">ف</div><div class="di"><span class="dn">فاطمة الزهراء</span><span class="dc">📱 0509988776</span><span class="dl">📍 الدمام</span></div><span class="dsb bn">🟡 جديد</span></div><div class="dcb"><div class="dtypes"><span class="dchip">🥗 غذاء</span></div><p class="ddesc">5 كراتين مواد غذائية: أرز، سكر، زيت، معلبات. صالحة حتى 2027</p><div class="dimgs"><div class="dimg">🍚</div><div class="dimg">🥫</div></div></div><div class="dcf"><span class="dtime">🕒 منذ 5 ساعات</span><button class="abtn abtn-a" onclick="acceptCard(this)">✓ قبول</button><button class="abtn abtn-r" onclick="rejectCard(this)">✕ رفض</button><button class="abtn abtn-v" onclick="openModal('فاطمة الزهراء','ف','#388e3c','غذاء','الدمام','0509988776')">👁 عرض</button></div></div>
+      <div class="don-card sa" data-status="accepted" data-types="items" data-donor="بدر الحارثي"><div class="dct"><div class="dav" style="background:linear-gradient(135deg,#2e8b57,#0d4a27)">ب</div><div class="di"><span class="dn">بدر الحارثي</span><span class="dc">📱 0566778899</span><span class="dl">📍 الطائف</span></div><span class="dsb ba">🟢 مقبول</span></div><div class="dcb"><div class="dtypes"><span class="dchip">📱 أجهزة إلكترونية</span></div><p class="ddesc">لابتوب Dell Core i5 + تابلت سامسونج للأطفال بحالة ممتازة</p><div class="dimgs"><div class="dimg">💻</div><div class="dimg">📱</div></div></div><div class="dcf"><span class="dtime">🕒 قبل يومين</span><button class="abtn abtn-v" onclick="openModal('بدر الحارثي','ب','#2e8b57','أجهزة','الطائف','0566778899')">👁 عرض</button></div></div>
+      <div class="don-card sn" data-status="new" data-types="money" data-donor="عبدالله الغامدي"><div class="dct"><div class="dav" style="background:linear-gradient(135deg,#7b1fa2,#4a148c)">ع</div><div class="di"><span class="dn">عبدالله الغامدي</span><span class="dc">📱 0541122334</span><span class="dl">📍 أبها</span></div><span class="dsb bn">🟡 جديد</span></div><div class="dcb"><div class="dtypes"><span class="dchip">💵 مالي</span></div><p class="ddesc">تبرع لدعم رعاية الأيتام وتوفير احتياجاتهم الأساسية</p><div class="dmoney"><span>💰</span><span class="dmon-amt">500 ر.س</span><span class="dmon-mtd">STC Pay</span></div></div><div class="dcf"><span class="dtime">🕒 منذ ساعة</span><button class="abtn abtn-a" onclick="acceptCard(this)">✓ قبول</button><button class="abtn abtn-r" onclick="rejectCard(this)">✕ رفض</button><button class="abtn abtn-v" onclick="openModal('عبدالله الغامدي','ع','#7b1fa2','مالي 500 ر.س','أبها','0541122334')">👁 عرض</button></div></div>
+      <div class="don-card sr" data-status="rejected" data-types="clothes" data-donor="ليلى عبدالرحمن"><div class="dct"><div class="dav" style="background:linear-gradient(135deg,#9e9e9e,#616161)">ل</div><div class="di"><span class="dn">ليلى عبدالرحمن</span><span class="dc">📱 0577665544</span><span class="dl">📍 المدينة المنورة</span></div><span class="dsb br">🔴 مرفوض</span></div><div class="dcb"><div class="dtypes"><span class="dchip">👕 ملابس أطفال</span></div><p class="ddesc">تم الرفض بسبب عدم مطابقة الحالة المطلوبة (تالفة)</p><div class="dimgs"><div class="dimg">👕</div></div></div><div class="dcf"><span class="dtime">🕒 قبل 3 أيام</span><button class="abtn abtn-v" onclick="openModal('ليلى عبدالرحمن','ل','#9e9e9e','ملابس','المدينة المنورة','0577665544')">👁 عرض</button></div></div>
+    </div>
+    <div id="emptyState" style="display:none"><span>🗂️</span><p>لا توجد تبرعات تطابق هذا الفلتر</p></div>
+  </div>
+  <!-- ACCEPTED -->
+  <div class="view" id="view-acc">
+    <div class="page-header"><div class="page-title"><h1>✅ التبرعات المقبولة</h1><p>24 تبرع مقبول هذا الشهر</p></div><div class="hdr-actions"><button class="btn-export" onclick="openExport()">📥 تصدير التقرير</button></div></div>
+    <div class="tbl-card"><div class="tbl-head"><h3>سجل التبرعات المقبولة</h3><span style="font-size:12px;color:#aaa">24 تبرع هذا الشهر</span></div>
+    <div class="tbl-scroll"><table class="dt"><thead><tr><th>#</th><th>المتبرع</th><th>نوع التبرع</th><th>الحملة</th><th>التاريخ</th><th>القيمة</th><th>الحالة</th></tr></thead><tbody>
+      <tr><td style="color:#ccc;font-size:11px">001</td><td><div style="display:flex;align-items:center;gap:8px"><div class="tdav" style="background:linear-gradient(135deg,#2e8b57,#0d4a27)">ب</div><div><div style="font-weight:700">بدر الحارثي</div><div style="font-size:11px;color:#bbb">0566778899</div></div></div></td><td><span class="tpill">📱 أجهزة</span></td><td>مدرسة الأطفال</td><td>21 فبراير</td><td>قطعتان</td><td><span class="spill ba">✅ مقبول</span></td></tr>
+      <tr><td style="color:#ccc;font-size:11px">002</td><td><div style="display:flex;align-items:center;gap:8px"><div class="tdav" style="background:linear-gradient(135deg,#e91e63,#880e4f)">ر</div><div><div style="font-weight:700">رنا السبيعي</div><div style="font-size:11px;color:#bbb">0511223344</div></div></div></td><td><span class="tpill">💵 مالي</span></td><td>بئر مياه نظيفة</td><td>19 فبراير</td><td style="color:var(--green-mid);font-weight:800">1,000 ر.س</td><td><span class="spill ba">✅ مقبول</span></td></tr>
+      <tr><td style="color:#ccc;font-size:11px">003</td><td><div style="display:flex;align-items:center;gap:8px"><div class="tdav" style="background:linear-gradient(135deg,#f57f17,#e65100)">ح</div><div><div style="font-weight:700">حمد الدوسري</div><div style="font-size:11px;color:#bbb">0544556677</div></div></div></td><td><span class="tpill">👕</span><span class="tpill">🥗</span></td><td>اعانة غذائية</td><td>17 فبراير</td><td>3 كراتين</td><td><span class="spill ba">✅ مقبول</span></td></tr>
+      <tr><td style="color:#ccc;font-size:11px">004</td><td><div style="display:flex;align-items:center;gap:8px"><div class="tdav" style="background:linear-gradient(135deg,#7b1fa2,#4a148c)">م</div><div><div style="font-weight:700">منى الزهراني</div><div style="font-size:11px;color:#bbb">0500998877</div></div></div></td><td><span class="tpill">📦 أغراض</span></td><td>رعاية الأيتام</td><td>15 فبراير</td><td>5 قطع</td><td><span class="spill ba">✅ مقبول</span></td></tr>
+      <tr><td style="color:#ccc;font-size:11px">005</td><td><div style="display:flex;align-items:center;gap:8px"><div class="tdav" style="background:linear-gradient(135deg,#1976d2,#0d47a1)">ك</div><div><div style="font-weight:700">كريم البقمي</div><div style="font-size:11px;color:#bbb">0533445566</div></div></div></td><td><span class="tpill">💵 مالي</span></td><td>عيادة طبية</td><td>14 فبراير</td><td style="color:var(--green-mid);font-weight:800">300 ر.س</td><td><span class="spill ba">✅ مقبول</span></td></tr>
+    </tbody></table></div></div>
+  </div>
+  <!-- STATS -->
+  <div class="view" id="view-stats">
+    <div class="page-header"><div class="page-title"><h1>📊 الإحصائيات</h1><p>نظرة شاملة على أداء الجمعية</p></div><div class="hdr-actions"><button class="btn-export" onclick="openExport()">📥 تصدير التقرير</button></div></div>
+    <div class="stats-grid">
+      <div class="stat-card"><h3>توزيع أنواع التبرعات</h3><div class="sbar-grp"><div class="sbar-item"><span class="sbar-lbl">👕 ملابس</span><div class="sbar-track"><div class="sbar-fill" style="width:45%;background:linear-gradient(to left,#e91e63,#ad1457)"></div></div><span class="sbar-val">45%</span></div><div class="sbar-item"><span class="sbar-lbl">💵 مالي</span><div class="sbar-track"><div class="sbar-fill" style="width:30%;background:linear-gradient(to left,var(--gold),var(--gold-btn))"></div></div><span class="sbar-val">30%</span></div><div class="sbar-item"><span class="sbar-lbl">🥗 غذاء</span><div class="sbar-track"><div class="sbar-fill" style="width:15%;background:linear-gradient(to left,var(--green-mid),var(--green-dark))"></div></div><span class="sbar-val">15%</span></div><div class="sbar-item"><span class="sbar-lbl">📦 أغراض</span><div class="sbar-track"><div class="sbar-fill" style="width:10%;background:linear-gradient(to left,#3b9fd1,#1565c0)"></div></div><span class="sbar-val">10%</span></div></div></div>
+      <div class="stat-card"><h3>إجمالي التبرعات المالية</h3><div class="big-stat"><span class="big-num">38,450</span><span class="big-lbl">ريال سعودي — فبراير 2026</span></div><div class="mini-stats"><div class="msr"><span class="msr-l">بطاقة بنكية</span><span class="msr-v">22,000 ر.س</span></div><div class="msr"><span class="msr-l">STC Pay</span><span class="msr-v">10,000 ر.س</span></div><div class="msr"><span class="msr-l">تحويل بنكي</span><span class="msr-v">6,450 ر.س</span></div></div></div>
+      <div class="stat-card"><h3>معدل القبول والرفض</h3><div class="sbar-grp" style="margin-bottom:16px"><div class="sbar-item"><span class="sbar-lbl">✅ مقبول</span><div class="sbar-track"><div class="sbar-fill" style="width:78%;background:linear-gradient(to left,var(--green-mid),var(--green-dark))"></div></div><span class="sbar-val">78%</span></div><div class="sbar-item"><span class="sbar-lbl">⏳ مراجعة</span><div class="sbar-track"><div class="sbar-fill" style="width:12%;background:linear-gradient(to left,#3b9fd1,#1565c0)"></div></div><span class="sbar-val">12%</span></div><div class="sbar-item"><span class="sbar-lbl">❌ مرفوض</span><div class="sbar-track"><div class="sbar-fill" style="width:10%;background:linear-gradient(to left,#e53935,#b71c1c)"></div></div><span class="sbar-val">10%</span></div></div><div class="mini-stats"><div class="msr"><span class="msr-l">إجمالي التبرعات</span><span class="msr-v">186</span></div><div class="msr"><span class="msr-l">متبرعون فريدون</span><span class="msr-v">143</span></div></div></div>
+    </div>
+  </div>
+  <!-- CAMPAIGNS -->
+  <div class="view" id="view-camp">
+    <div class="page-header"><div class="page-title"><h1>🎯 حملاتنا الفعالة</h1><p>3 حملات نشطة حالياً</p></div><div class="hdr-actions"><button class="btn-primary" onclick="openCampModal()">➕ إضافة حملة</button></div></div>
+    <div class="camp-grid" id="campGrid">
+      <div class="camp-card"><div class="camp-img" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9)">📚<span class="camp-tag">تعليم</span><span class="camp-live">● نشطة</span></div><div class="camp-body"><div class="camp-title">مدرسة للأطفال المحرومين</div><div class="camp-desc">نبني مدرسة لـ 300 طفل في المناطق الريفية</div><div class="camp-prog-info"><span class="camp-raised">85,000 ر.س</span><span class="camp-goal-lbl">من 100,000 ر.س</span></div><div class="prog-bar"><div class="prog-fill" style="width:85%"></div></div><div class="camp-foot"><button class="cbtn cbtn-e" onclick="showToast('✏️ تعديل الحملة')">✏️ تعديل</button><button class="cbtn cbtn-s" onclick="if(confirm('إيقاف؟'))showToast('⏸ تم الإيقاف','error')">⏸ إيقاف</button></div></div></div>
+      <div class="camp-card"><div class="camp-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">🏥<span class="camp-tag">صحة</span><span class="camp-live">● نشطة</span></div><div class="camp-body"><div class="camp-title">عيادة طبية متنقلة</div><div class="camp-desc">رعاية صحية مجانية للمجتمعات النائية</div><div class="camp-prog-info"><span class="camp-raised">45,000 ر.س</span><span class="camp-goal-lbl">من 80,000 ر.س</span></div><div class="prog-bar"><div class="prog-fill" style="width:56%"></div></div><div class="camp-foot"><button class="cbtn cbtn-e" onclick="showToast('✏️ تعديل الحملة')">✏️ تعديل</button><button class="cbtn cbtn-s" onclick="if(confirm('إيقاف؟'))showToast('⏸ تم الإيقاف','error')">⏸ إيقاف</button></div></div></div>
+      <div class="camp-card"><div class="camp-img" style="background:linear-gradient(135deg,#e8f0fe,#c5cae9)">💧<span class="camp-tag">مياه</span><span class="camp-live">● نشطة</span></div><div class="camp-body"><div class="camp-title">بئر مياه نظيفة</div><div class="camp-desc">حفر بئر يستفيد منه 500 شخص</div><div class="camp-prog-info"><span class="camp-raised">28,000 ر.س</span><span class="camp-goal-lbl">من 30,000 ر.س</span></div><div class="prog-bar"><div class="prog-fill" style="width:93%"></div></div><div class="camp-foot"><button class="cbtn cbtn-e" onclick="showToast('✏️ تعديل الحملة')">✏️ تعديل</button><button class="cbtn cbtn-s" onclick="if(confirm('إيقاف؟'))showToast('⏸ تم الإيقاف','error')">⏸ إيقاف</button></div></div></div>
+    </div>
+  </div>
+  <!-- ARCHIVE -->
+  <div class="view" id="view-arch">
+    <div class="page-header"><div class="page-title"><h1>📁 أرشيف الحملات</h1><p>الحملات المنتهية والمكتملة</p></div></div>
+    <div class="camp-grid"><div class="camp-card" style="opacity:.75"><div class="camp-img" style="background:linear-gradient(135deg,#f5f0e4,#e8e0d0)">🛒<span class="camp-tag" style="background:#aaa">منتهية</span></div><div class="camp-body"><div class="camp-title">اعانة غذائية طارئة 2025</div><div class="camp-desc">تم توزيع 1500 وجبة على المحتاجين بنجاح</div><div class="camp-prog-info"><span class="camp-raised">50,000 ر.س</span><span class="camp-goal-lbl">الهدف: 50,000 ر.س</span></div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:linear-gradient(to left,var(--gold),var(--gold-btn))"></div></div><div style="font-size:11px;color:#aaa;text-align:center;margin-top:8px">✅ مكتملة — يناير 2026</div></div></div></div>
+  </div>
+  <!-- PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="page-header"><div class="page-title"><h1>🏛️ ملف الجمعية</h1><p>معلومات جمعية النور الخيرية</p></div><div class="hdr-actions"><button class="btn-primary" onclick="showToast('✅ تم حفظ التغييرات')">💾 حفظ التعديلات</button></div></div>
+    <div class="settings-grid">
+      <div class="sc"><h3>المعلومات الأساسية</h3><div class="fg"><label>اسم الجمعية</label><input class="fi" value="جمعية النور الخيرية"/></div><div class="fg"><label>رقم السجل</label><input class="fi" value="CH-2024-0082" readonly style="opacity:.6"/></div><div class="fg"><label>المدينة</label><input class="fi" value="الرياض"/></div><div class="fg"><label>البريد الإلكتروني</label><input class="fi" value="info@alnour.org.sa" dir="ltr"/></div><button class="save-btn" onclick="showToast('✅ تم تحديث الملف')">💾 حفظ</button></div>
+      <div class="sc"><h3>معلومات التواصل</h3><div class="fg"><label>رقم الهاتف</label><input class="fi" value="0112345678" dir="ltr"/></div><div class="fg"><label>الموقع الإلكتروني</label><input class="fi" value="www.alnour.org.sa" dir="ltr"/></div><div class="fg"><label>نبذة عن الجمعية</label><textarea class="fi">جمعية خيرية متخصصة في دعم الأسر المحتاجة وتوفير الاحتياجات الأساسية في منطقة الرياض.</textarea></div><button class="save-btn" onclick="showToast('✅ تم تحديث معلومات التواصل')">💾 حفظ</button></div>
+    </div>
+  </div>
+  <!-- SETTINGS -->
+  <div class="view" id="view-settings">
+    <div class="page-header"><div class="page-title"><h1>⚙️ الإعدادات</h1><p>إدارة إعدادات الجمعية</p></div></div>
+    <div class="settings-grid">
+      <div class="sc"><h3>إعدادات الإشعارات</h3>
+        <div class="trow"><div class="tinfo"><h4>تبرع جديد</h4><p>إشعار عند وصول تبرع جديد</p></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><h4>تبرع مالي</h4><p>إشعار خاص عند استلام مبالغ مالية</p></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><h4>حملة قاربت الاكتمال</h4><p>إشعار عند وصول حملة لـ 90%</p></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><h4>تقرير أسبوعي</h4><p>إرسال ملخص أسبوعي على البريد</p></div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div class="tinfo"><h4>إشعارات البريد الإلكتروني</h4><p>استقبال الإشعارات على الإيميل</p></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+        <button class="save-btn" onclick="showToast('✅ تم حفظ إعدادات الإشعارات')">💾 حفظ الإعدادات</button>
+      </div>
+      <div class="sc"><h3>إعدادات الحساب</h3>
+        <div class="fg"><label>كلمة المرور الحالية</label><input class="fi" type="password" placeholder="••••••••"/></div>
+        <div class="fg"><label>كلمة المرور الجديدة</label><input class="fi" type="password" placeholder="••••••••"/></div>
+        <div class="fg"><label>تأكيد كلمة المرور</label><input class="fi" type="password" placeholder="••••••••"/></div>
+        <button class="save-btn" onclick="showToast('✅ تم تغيير كلمة المرور')">🔒 تغيير كلمة المرور</button>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<!-- MODALS -->
+<div class="ov" id="detailOv" onclick="if(event.target===this)closeDet()">
+  <div class="modal"><div class="modal-head"><h3 id="det-title">تفاصيل التبرع</h3><button class="mc" onclick="closeDet()">✕</button></div>
+  <div class="modal-body"><div class="ms"><span class="ms-title">معلومات المتبرع</span><div class="mdc"><div class="mav" id="det-av">س</div><div><div class="mdn" id="det-name">—</div><div class="mds" id="det-sub">—</div></div></div></div><div class="ms"><span class="ms-title">تفاصيل التبرع</span><div class="igrid"><div class="iitem"><span class="iitem-l">نوع التبرع</span><span class="iitem-v" id="det-type">—</span></div><div class="iitem"><span class="iitem-l">المنطقة</span><span class="iitem-v" id="det-loc">—</span></div><div class="iitem"><span class="iitem-l">رقم الهاتف</span><span class="iitem-v" id="det-phone" dir="ltr">—</span></div><div class="iitem"><span class="iitem-l">تاريخ الإرسال</span><span class="iitem-v">23 فبراير 2026</span></div></div></div><div class="ms"><span class="ms-title">الصور المرفقة</span><div class="mimgs"><div class="mimg">📦</div><div class="mimg">🛍️</div><div class="mimg">📸</div></div></div></div>
+  <div class="modal-acts"><button class="mbtn mbtn-h" onclick="closeDet();showToast('⏸ تم تعليق التبرع','gold')" style="flex:.6">⏸ تعليق</button><button class="mbtn mbtn-r" onclick="closeDet();showToast('❌ تم رفض التبرع','error')">✕ رفض</button><button class="mbtn mbtn-a" onclick="closeDet();showToast('✅ تم قبول التبرع!')">✓ قبول</button></div></div>
+</div>
+<div class="ov" id="exportOv" onclick="if(event.target===this)closeExport()">
+  <div class="modal"><div class="modal-head"><h3>📥 تصدير التقرير</h3><button class="mc" onclick="closeExport()">✕</button></div>
+  <div class="modal-body"><div class="ms"><span class="ms-title">اختر نوع التقرير</span><div class="exp-opts"><div class="exp-opt sel" onclick="selExp(this)"><span class="exp-opt-ico">📊</span><h4>تقرير Excel</h4><p>جدول بيانات كامل</p></div><div class="exp-opt" onclick="selExp(this)"><span class="exp-opt-ico">📄</span><h4>تقرير PDF</h4><p>جاهز للطباعة</p></div><div class="exp-opt" onclick="selExp(this)"><span class="exp-opt-ico">📈</span><h4>تقرير إحصائي</h4><p>رسوم وتحليل</p></div><div class="exp-opt" onclick="selExp(this)"><span class="exp-opt-ico">💰</span><h4>تقرير مالي</h4><p>المالية فقط</p></div></div></div><div class="ms"><span class="ms-title">الفترة الزمنية</span><div class="date-range"><div class="fg" style="margin:0"><label>من تاريخ</label><input type="date" class="fi" value="2026-02-01"/></div><div class="fg" style="margin:0"><label>إلى تاريخ</label><input type="date" class="fi" value="2026-02-23"/></div></div></div><div class="ms"><span class="ms-title">تضمين في التقرير</span><div class="cat-chips"><div class="cchip sel" onclick="this.classList.toggle('sel')">📦 كل التبرعات</div><div class="cchip sel" onclick="this.classList.toggle('sel')">✅ المقبولة فقط</div><div class="cchip" onclick="this.classList.toggle('sel')">❌ المرفوضة</div><div class="cchip sel" onclick="this.classList.toggle('sel')">💰 المالية</div></div></div><div class="exp-prog" id="expProg"><p style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:7px">⏳ جاري إعداد التقرير...</p><div class="exp-bar-wrap"><div class="exp-bar-fill" id="expBar"></div></div><p style="font-size:11px;color:#aaa" id="expStatus">جاري جمع البيانات...</p></div></div>
+  <div class="modal-acts"><button class="mbtn mbtn-h" onclick="closeExport()" style="flex:.4">إلغاء</button><button class="mbtn mbtn-a" onclick="startExport()" id="expBtn">📥 تصدير</button></div></div>
+</div>
+<div class="ov" id="campOv" onclick="if(event.target===this)closeCamp()">
+  <div class="modal"><div class="modal-head"><h3>➕ إضافة حملة جديدة</h3><button class="mc" onclick="closeCamp()">✕</button></div>
+  <div class="modal-body"><div class="ms"><span class="ms-title">معلومات الحملة</span><div class="fg"><label>اسم الحملة <span style="color:#e53935">*</span></label><input class="fi" id="cn" placeholder="مثال: مدرسة للأطفال المحرومين"/></div><div class="form-row2"><div class="fg" style="margin:0"><label>الهدف المالي (ر.س)</label><input class="fi" id="cg" type="number" placeholder="100000"/></div><div class="fg" style="margin:0"><label>تاريخ الانتهاء</label><input class="fi" id="cd" type="date"/></div></div><div style="height:11px"></div><div class="fg"><label>وصف الحملة <span style="color:#e53935">*</span></label><textarea class="fi" id="cdesc" placeholder="اوصف الهدف من الحملة..." oninput="document.getElementById('cc').textContent=this.value.length+' / 300 حرف'"></textarea><div class="cc-cnt" id="cc">0 / 300 حرف</div></div></div><div class="ms"><span class="ms-title">فئة الحملة</span><div class="cat-chips"><div class="cchip" onclick="selCat(this)">📚 تعليم</div><div class="cchip" onclick="selCat(this)">🏥 صحة</div><div class="cchip" onclick="selCat(this)">💧 مياه</div><div class="cchip" onclick="selCat(this)">🛒 غذاء</div><div class="cchip" onclick="selCat(this)">👦 أيتام</div><div class="cchip" onclick="selCat(this)">📦 أخرى</div></div></div></div>
+  <div class="modal-acts"><button class="mbtn mbtn-h" onclick="closeCamp()" style="flex:.4">إلغاء</button><button class="mbtn mbtn-a" onclick="addCamp()">➕ إضافة الحملة</button></div></div>
+</div>
+<div class="toast" id="toast">✅</div>
 
+<script>
+function toggleSidebar(){const s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay'),op=s.classList.toggle('open');o.classList.toggle('show',op);document.body.style.overflow=op?'hidden':'';}
+function closeSidebarMobile(){const s=document.getElementById('sidebar');if(s.classList.contains('open')){s.classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('show');document.body.style.overflow='';}}
+function showView(id,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));const v=document.getElementById('view-'+id);if(v)v.classList.add('active');if(el)setActive(el);window.scrollTo(0,0);closeSidebarMobile();}
+function setActive(el){document.querySelectorAll('.sl').forEach(l=>l.classList.remove('active'));el.classList.add('active');}
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');obs.unobserve(e.target);}}),{threshold:0.06});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+let nOpen=false;
+function toggleNotif(){nOpen=!nOpen;document.getElementById('notifPanel').classList.toggle('show',nOpen);}
+document.addEventListener('click',e=>{if(nOpen&&!e.target.closest('.notif-panel')&&!e.target.closest('#notifBtn')){nOpen=false;document.getElementById('notifPanel').classList.remove('show');}});
+function readNotif(item){item.classList.remove('unread');updNotifCnt();}
+function markAllRead(){document.querySelectorAll('.ni.unread').forEach(i=>i.classList.remove('unread'));updNotifCnt();showToast('✅ تم تحديد الكل كمقروء');}
+function updNotifCnt(){const n=document.querySelectorAll('.ni.unread').length;const b=document.getElementById('unreadBadge');b.textContent=n;b.style.display=n>0?'':'none';document.getElementById('notifDot').style.display=n>0?'':'none';}
+function acceptCard(btn){const card=btn.closest('.don-card'),badge=card.querySelector('.dsb');card.className=card.className.replace(/\b(sn|sv|sa|sr)\b/g,'')+' sa';badge.className='dsb ba';badge.textContent='🟢 مقبول';card.dataset.status='accepted';card.querySelectorAll('.abtn-a,.abtn-r').forEach(b=>b.remove());showToast('✅ تم قبول التبرع بنجاح!');}
+function rejectCard(btn){if(!confirm('رفض هذا التبرع؟'))return;const card=btn.closest('.don-card'),badge=card.querySelector('.dsb');card.className=card.className.replace(/\b(sn|sv|sa|sr)\b/g,'')+' sr';badge.className='dsb br';badge.textContent='🔴 مرفوض';card.dataset.status='rejected';card.querySelectorAll('.abtn-a,.abtn-r').forEach(b=>b.remove());showToast('❌ تم رفض التبرع','error');}
+let cStat='all',cType='all';
+function fStat(tab,v){document.querySelectorAll('#stabs .ftab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');cStat=v;applyF();}
+function fType(tab,v){document.querySelectorAll('#ttabs .ftab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');cType=v;applyF();}
+function applyF(){const q=document.querySelector('.search-mini input')?.value.trim()||'';let vis=0;document.querySelectorAll('#donGrid .don-card').forEach(c=>{const ms=cStat==='all'||c.dataset.status===cStat,mt=cType==='all'||(c.dataset.types||'').includes(cType),mq=!q||(c.dataset.donor||'').includes(q);c.style.display=(ms&&mt&&mq)?'':'none';if(ms&&mt&&mq)vis++;});const emp=document.getElementById('emptyState');if(emp)emp.style.display=vis===0?'block':'none';const cnt=document.getElementById('don-cnt');if(cnt)cnt.textContent=vis+' تبرع';}
+function openModal(name,letter,color,type,loc,phone){document.getElementById('det-title').textContent='تفاصيل تبرع — '+name.split(' ')[0];const av=document.getElementById('det-av');av.textContent=letter;av.style.background='linear-gradient(135deg,'+color+',#0d4a27)';document.getElementById('det-name').textContent=name;document.getElementById('det-sub').textContent='📱 '+phone+'  |  📍 '+loc;document.getElementById('det-type').textContent=type;document.getElementById('det-loc').textContent=loc;document.getElementById('det-phone').textContent=phone;document.getElementById('detailOv').classList.add('show');document.body.style.overflow='hidden';}
+function closeDet(){document.getElementById('detailOv').classList.remove('show');document.body.style.overflow='';}
+function openExport(){document.getElementById('expProg').classList.remove('show');document.getElementById('expBtn').disabled=false;document.getElementById('expBtn').textContent='📥 تصدير';document.getElementById('expBar').style.width='0';document.getElementById('exportOv').classList.add('show');document.body.style.overflow='hidden';}
+function closeExport(){document.getElementById('exportOv').classList.remove('show');document.body.style.overflow='';}
+function selExp(el){document.querySelectorAll('.exp-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
+function startExport(){const btn=document.getElementById('expBtn'),prog=document.getElementById('expProg'),bar=document.getElementById('expBar'),sts=document.getElementById('expStatus');btn.disabled=true;btn.textContent='⏳ جاري...';prog.classList.add('show');const steps=[[0,'جاري جمع البيانات...'],[30,'جاري معالجة التبرعات...'],[60,'جاري إنشاء التقرير...'],[85,'مراجعة نهائية...'],[100,'اكتمل التقرير! ✅']];let i=0;const t=setInterval(()=>{if(i>=steps.length){clearInterval(t);setTimeout(()=>{closeExport();showToast('📥 تم تصدير التقرير بنجاح!')},600);return;}bar.style.width=steps[i][0]+'%';sts.textContent=steps[i][1];i++;},700);}
+function openCampModal(){document.getElementById('campOv').classList.add('show');document.body.style.overflow='hidden';}
+function closeCamp(){document.getElementById('campOv').classList.remove('show');document.body.style.overflow='';}
+function selCat(el){document.querySelectorAll('.cat-chips .cchip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function addCamp(){const name=document.getElementById('cn').value.trim(),goal=document.getElementById('cg').value,desc=document.getElementById('cdesc').value.trim(),cat=document.querySelector('.cat-chips .cchip.sel');if(!name){showToast('⚠️ أدخل اسم الحملة','error');return;}if(!desc){showToast('⚠️ أدخل وصف الحملة','error');return;}const catLabel=cat?cat.textContent:'📦 أخرى',goalN=parseInt(goal)||50000,cols=['#e8f5e9,#c8e6c9','#e3f2fd,#bbdefb','#fff8e8,#ffe0b2'],c=cols[Math.floor(Math.random()*cols.length)],emap={'تعليم':'📚','صحة':'🏥','مياه':'💧','غذاء':'🛒','أيتام':'👦','أخرى':'📦'},emoji=emap[catLabel.replace(/[^\u0600-\u06FF]/g,'').trim()]||'📦',card=document.createElement('div');card.className='camp-card';card.innerHTML=`<div class="camp-img" style="background:linear-gradient(135deg,${c})">${emoji}<span class="camp-tag">${catLabel}</span><span class="camp-live">● نشطة</span></div><div class="camp-body"><div class="camp-title">${name}</div><div class="camp-desc">${desc.substring(0,80)}${desc.length>80?'...':''}</div><div class="camp-prog-info"><span class="camp-raised">0 ر.س</span><span class="camp-goal-lbl">من ${goalN.toLocaleString()} ر.س</span></div><div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div><div class="camp-foot"><button class="cbtn cbtn-e" onclick="showToast('✏️ تعديل')">✏️ تعديل</button><button class="cbtn cbtn-s" onclick="if(confirm('إيقاف؟'))showToast('⏸ إيقاف','error')">⏸ إيقاف</button></div></div>`;document.getElementById('campGrid').insertBefore(card,document.getElementById('campGrid').firstChild);document.getElementById('cn').value='';document.getElementById('cg').value='';document.getElementById('cdesc').value='';document.getElementById('cc').textContent='0 / 300 حرف';document.querySelectorAll('.cat-chips .cchip').forEach(c=>c.classList.remove('sel'));closeCamp();showView('camp',null);showToast('🎯 تم إضافة الحملة بنجاح!');}
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),3000);}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDet();closeExport();closeCamp();nOpen=false;document.getElementById('notifPanel').classList.remove('show');}});
+</script>
+</body>
 </html>

@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nabd — لوحة التحكم</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green-dark:  #0d4a27;
+      --green-hero:  #1a6b3c;
+      --green-mid:   #2e8b57;
+      --green-wave:  #7ec87e;
+      --green-stats: #5cb85c;
+      --cream:       #f5f0e4;
+      --gold:        #c8a84b;
+      --gold-btn:    #b8943a;
+      --white:       #ffffff;
+      --text-dark:   #1a1a1a;
+      --text-gray:   #555;
+      --card-border: #e0ddd4;
+      --sidebar-w:   260px;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+      background: var(--cream);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ===================== NAVBAR ===================== */
+    .navbar {
+      background: var(--green-dark);
+      padding: 0 28px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 16px rgba(0,0,0,.25);
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: 1px;
+      text-decoration: none;
+    }
+    .logo span { color: var(--gold); }
+
+    .nav-search {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 10px;
+      padding: 7px 14px;
+      gap: 8px;
+      width: 240px;
+    }
+    .nav-search input {
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Cairo', sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,.85);
+      width: 100%;
+      text-align: right;
+    }
+    .nav-search input::placeholder { color: rgba(255,255,255,.4); }
+    .nav-search-icon { color: rgba(255,255,255,.4); font-size: 14px; }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+    .nav-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.1);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 17px;
+      color: rgba(255,255,255,.75);
+      position: relative;
+      transition: background .2s;
+      user-select: none;
+    }
+    .nav-btn:hover  { background: rgba(255,255,255,.16); }
+    .nav-btn.active { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.3); }
+
+    .nav-badge {
+      position: absolute;
+      top: 4px; left: 4px;
+      min-width: 16px; height: 16px;
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; color: #fff;
+      padding: 0 4px;
+      border: 2px solid var(--green-dark);
+      line-height: 1;
+    }
+    .badge-red  { background: #e53935; }
+    .badge-blue { background: #2196f3; }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      padding: 5px 14px 5px 8px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .nav-user:hover { background: rgba(255,255,255,.14); }
+
+    .nav-avatar {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-btn));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900; color: #fff;
+    }
+
+    .nav-user-info { text-align: right; }
+    .nav-user-name { font-size: 13px; font-weight: 700; color: var(--white); display: block; }
+    .nav-user-role { font-size: 11px; color: rgba(255,255,255,.5); display: block; }
+
+    /* =================== FLOATING PANELS =================== */
+    .fpanel {
+      position: fixed;
+      top: 70px;
+      width: 360px;
+      background: var(--white);
+      border: 1.5px solid var(--card-border);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.16);
+      z-index: 2000;
+      display: flex; flex-direction: column;
+      max-height: 520px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-10px) scale(.97);
+      pointer-events: none;
+      transition: opacity .22s ease, transform .25s cubic-bezier(.34,1.4,.64,1);
+    }
+    .fpanel.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+    #notifPanel { left: 80px; }
+    #msgPanel   { left: 28px; }
+
+    @media(max-width:600px){
+      #notifPanel, #msgPanel { left: 8px; right: 8px; width: auto; }
+    }
+
+    .fpanel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 18px 13px;
+      border-bottom: 1px solid #f2ede6;
+      flex-shrink: 0;
+    }
+    .fpanel-head h3 { font-size: 15px; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 7px; }
+    .fpanel-head-cnt { font-size: 10px; font-weight: 800; color: #fff; padding: 2px 7px; border-radius: 20px; }
+
+    .fpanel-actions { display: flex; align-items: center; gap: 8px; }
+    .fpanel-markall {
+      font-size: 11.5px; font-weight: 700; color: var(--green-mid);
+      background: none; border: none; cursor: pointer; font-family: 'Cairo',sans-serif;
+    }
+    .fpanel-close {
+      width: 28px; height: 28px; border-radius: 8px; background: #f5f0e4;
+      border: none; cursor: pointer; font-size: 13px; color: #888;
+      display: flex; align-items: center; justify-content: center; transition: background .2s;
+    }
+    .fpanel-close:hover { background: #e8dfc8; }
+
+    .fpanel-body { overflow-y: auto; flex: 1; }
+    .fpanel-body::-webkit-scrollbar { width: 4px; }
+    .fpanel-body::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
+
+    .ni {
+      display: flex; gap: 12px; padding: 13px 18px;
+      border-bottom: 1px solid #fafaf8;
+      cursor: pointer; transition: background .18s;
+      position: relative;
+    }
+    .ni:last-child { border-bottom: none; }
+    .ni:hover { background: #fdfcfa; }
+    .ni.unread { background: #f7fdf9; }
+    .ni.unread::after {
+      content: ''; position: absolute;
+      right: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--green-mid);
+      border-radius: 0 3px 3px 0;
+    }
+    .ni-ico { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    .ni-body { flex: 1; }
+    .ni-title { font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+    .ni-sub   { font-size: 11.5px; color: #aaa; line-height: 1.5; }
+    .ni-time  { font-size: 10.5px; color: #ccc; margin-top: 3px; display: block; }
+
+    .mi {
+      display: flex; gap: 12px; padding: 13px 18px;
+      border-bottom: 1px solid #fafaf8;
+      cursor: pointer; transition: background .18s;
+      position: relative;
+    }
+    .mi:last-child { border-bottom: none; }
+    .mi:hover { background: #fdfcfa; }
+    .mi.unread { background: #f5f8ff; }
+    .mi.unread::after {
+      content: ''; position: absolute;
+      right: 0; top: 0; bottom: 0; width: 3px;
+      background: #2196f3;
+      border-radius: 0 3px 3px 0;
+    }
+    .mi-av  { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; color: #fff; flex-shrink: 0; }
+    .mi-body { flex: 1; min-width: 0; }
+    .mi-name { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+    .mi-text { font-size: 11.5px; color: #aaa; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mi-time { font-size: 10.5px; color: #ccc; margin-top: 3px; display: block; }
+
+    .fpanel-footer {
+      padding: 11px 18px; border-top: 1px solid #f2ede6;
+      text-align: center; flex-shrink: 0;
+    }
+    .fpanel-footer a { font-size: 12.5px; font-weight: 700; color: var(--green-mid); text-decoration: none; cursor: pointer; }
+    .fpanel-footer a:hover { color: var(--green-dark); }
+
+    /* =================== DONATE MODAL =================== */
+    .modal-ov {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(5px);
+      z-index: 9000;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-ov.show { display: flex; }
+
+    .donate-modal {
+      background: var(--white);
+      border-radius: 24px;
+      width: 100%; max-width: 500px;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 30px 80px rgba(0,0,0,.25);
+      animation: modalPop .32s cubic-bezier(.34,1.3,.64,1);
+    }
+    @keyframes modalPop { from { transform: scale(.93) translateY(20px); opacity:0 } to { transform:none; opacity:1 } }
+
+    .dm-head {
+      padding: 20px 22px 16px;
+      border-bottom: 1px solid #f2ede6;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--white); z-index:1;
+      border-radius: 24px 24px 0 0;
+    }
+    .dm-head h3 { font-size: 18px; font-weight: 900; color: var(--text-dark); }
+    .dm-close {
+      width: 34px; height: 34px; border-radius: 10px; background: #f5f0e4;
+      border: none; cursor: pointer; font-size: 15px; color: #888;
+      display: flex; align-items: center; justify-content: center; transition: background .2s;
+    }
+    .dm-close:hover { background: #e8dfc8; }
+
+    .dm-body { padding: 22px; }
+
+    .steps-bar { display: flex; align-items: center; margin-bottom: 22px; }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--card-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: #bbb; background: #fafafa;
+      flex-shrink: 0; transition: all .3s;
+    }
+    .step-dot.active { border-color: var(--green-mid); color: var(--green-mid); background: #f0fff6; }
+    .step-dot.done   { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+    .step-line { flex: 1; height: 2px; background: var(--card-border); transition: background .3s; }
+    .step-line.done { background: var(--green-mid); }
+    .steps-labels { display: flex; justify-content: space-between; margin-top: 5px; margin-bottom: 18px; }
+    .steps-labels span { font-size: 10px; color: #bbb; flex: 1; text-align: center; }
+    .steps-labels span:first-child { text-align: right; }
+    .steps-labels span:last-child  { text-align: left; }
+
+    .dm-step { display: none; animation: stepIn .28s ease; }
+    .dm-step.active { display: block; }
+    @keyframes stepIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:none} }
+
+    .dm-section-label { font-size: 10.5px; font-weight: 800; color: #bbb; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: block; }
+
+    .camp-opts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .camp-opt {
+      display: flex; align-items: center; gap: 13px;
+      border: 2px solid var(--card-border); border-radius: 14px;
+      padding: 13px 15px; cursor: pointer; transition: all .2s; background: #fafaf8;
+    }
+    .camp-opt:hover { border-color: var(--green-mid); background: #f0fff6; }
+    .camp-opt.sel   { border-color: var(--green-mid); background: #f0fff6; box-shadow: 0 0 0 3px rgba(46,139,87,.1); }
+    .co-ico  { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .co-info { flex: 1; min-width: 0; }
+    .co-name { font-size: 13px; font-weight: 800; color: var(--text-dark); }
+    .co-prog { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+    .co-bar  { flex: 1; height: 5px; background: #eee; border-radius: 10px; overflow: hidden; }
+    .co-fill { height: 100%; border-radius: 10px; background: linear-gradient(to left, var(--green-stats), var(--green-mid)); }
+    .co-pct  { font-size: 11px; font-weight: 800; color: var(--green-mid); }
+    .co-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--card-border); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; transition: all .2s; }
+    .camp-opt.sel .co-check { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+
+    .amounts-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 13px; }
+    .amt-chip {
+      border: 2px solid var(--card-border); border-radius: 12px;
+      padding: 12px 6px; text-align: center; cursor: pointer;
+      transition: all .2s; background: #fafaf8; font-family: 'Cairo',sans-serif;
+    }
+    .amt-chip:hover { border-color: var(--green-mid); background: #f0fff6; }
+    .amt-chip.sel   { border-color: var(--green-mid); background: #f0fff6; box-shadow: 0 0 0 3px rgba(46,139,87,.12); }
+    .amt-num { font-size: 17px; font-weight: 900; color: var(--text-dark); display: block; }
+    .amt-cur { font-size: 10.5px; color: #aaa; font-weight: 600; }
+
+    .custom-amt-wrap {
+      display: flex; border: 2px solid var(--card-border); border-radius: 12px;
+      overflow: hidden; margin-bottom: 18px; transition: border-color .2s;
+    }
+    .custom-amt-wrap:focus-within { border-color: var(--green-mid); }
+    .custom-amt-wrap input {
+      flex: 1; padding: 11px 13px; border: none; outline: none;
+      font-family: 'Cairo',sans-serif; font-size: 16px; font-weight: 700;
+      color: var(--text-dark); background: #fafaf8; text-align: right;
+    }
+    .custom-amt-lbl { padding: 11px 13px; font-size: 13px; font-weight: 800; color: #888; background: #f0ece4; border-right: 2px solid var(--card-border); white-space: nowrap; }
+
+    .pay-methods { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+    .pay-method {
+      display: flex; align-items: center; gap: 13px;
+      border: 2px solid var(--card-border); border-radius: 13px;
+      padding: 12px 15px; cursor: pointer; transition: all .2s; background: #fafaf8;
+    }
+    .pay-method:hover { border-color: var(--green-mid); background: #f0fff6; }
+    .pay-method.sel   { border-color: var(--green-mid); background: #f0fff6; box-shadow: 0 0 0 3px rgba(46,139,87,.1); }
+    .pay-ico   { font-size: 22px; width: 38px; text-align: center; }
+    .pay-name  { font-size: 13.5px; font-weight: 700; color: var(--text-dark); flex: 1; }
+    .pay-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--card-border); display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all .2s; }
+    .pay-method.sel .pay-check { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+
+    .don-summary {
+      background: linear-gradient(135deg, #f0fff6, #e8f5e9);
+      border: 1.5px solid #b2dfdb; border-radius: 16px;
+      padding: 18px; margin-bottom: 18px;
+    }
+    .ds-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+    .ds-row:last-child { margin-bottom: 0; border-top: 1px dashed #b2dfdb; padding-top: 11px; margin-top: 4px; }
+    .ds-lbl  { font-size: 12.5px; color: #666; }
+    .ds-val  { font-size: 13.5px; font-weight: 800; color: var(--text-dark); }
+    .ds-total { font-size: 20px; font-weight: 900; color: var(--green-mid); }
+
+    .dm-actions { display: flex; gap: 10px; }
+    .dm-btn-next {
+      flex: 1; padding: 12px;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      color: #fff; border: none; border-radius: 12px;
+      font-family: 'Cairo',sans-serif; font-size: 14px; font-weight: 800;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(46,139,87,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .dm-btn-next:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(46,139,87,.4); }
+    .dm-btn-back {
+      padding: 12px 18px;
+      background: #f5f0e4; color: #888; border: none; border-radius: 12px;
+      font-family: 'Cairo',sans-serif; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background .2s;
+    }
+    .dm-btn-back:hover { background: #e8dfc8; }
+
+    .success-wrap { text-align: center; padding: 10px 0 6px; }
+    .success-circle {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: #fff; margin: 0 auto 18px;
+      box-shadow: 0 10px 30px rgba(46,139,87,.4);
+      animation: popIn .5s cubic-bezier(.34,1.6,.64,1);
+    }
+    @keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+    .success-wrap h3 { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+    .success-wrap p  { font-size: 13px; color: #888; line-height: 1.8; margin-bottom: 18px; }
+    .success-amount  { font-size: 32px; font-weight: 900; color: var(--green-mid); display: block; }
+    .success-project { font-size: 14px; color: #666; display: block; margin-bottom: 18px; }
+
+    /* ===================== LAYOUT ===================== */
+    .layout { display: flex; padding-top: 62px; min-height: calc(100vh - 62px); }
+
+    /* ===================== SIDEBAR ===================== */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--white);
+      border-left: 1px solid var(--card-border);
+      position: fixed; top: 62px; right: 0; bottom: 0;
+      overflow-y: auto; display: flex; flex-direction: column; z-index: 900;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
+
+    .sidebar-user { padding: 24px 20px 20px; border-bottom: 1px solid #f0ece3; text-align: center; }
+    .sidebar-avatar {
+      width: 70px; height: 70px; border-radius: 20px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-btn));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 900; color: #fff;
+      margin: 0 auto 12px;
+      box-shadow: 0 6px 20px rgba(200,168,75,.35);
+    }
+    .sidebar-name  { font-size: 15px; font-weight: 800; color: var(--text-dark); display: block; }
+    .sidebar-email { font-size: 11.5px; color: #aaa; display: block; margin-top: 3px; }
+    .sidebar-level {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fff8e8; border: 1px solid #f0dfa0; color: var(--gold-btn);
+      font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-top: 10px;
+    }
+
+    .sidebar-nav { padding: 14px 12px; flex: 1; }
+    .sidebar-section-label {
+      font-size: 10px; font-weight: 800; color: #bbb;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 8px 10px 6px; display: block;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 12px;
+      color: var(--text-gray); font-size: 13.5px; font-weight: 600;
+      text-decoration: none; margin-bottom: 2px; transition: all .2s;
+      position: relative; cursor: pointer;
+    }
+    .sidebar-link:hover { background: #f5f0e4; color: var(--green-mid); }
+    .sidebar-link.active { background: linear-gradient(135deg,#e8f5e9,#f0fff4); color: var(--green-mid); font-weight: 800; }
+    .sidebar-link.active::before {
+      content: ''; position: absolute; right: 0; top: 20%; bottom: 20%;
+      width: 3px; background: var(--green-mid); border-radius: 0 3px 3px 0;
+    }
+    .sidebar-icon  { font-size: 18px; flex-shrink: 0; width: 22px; text-align: center; }
+    .sidebar-badge { margin-right: auto; background: var(--green-mid); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 20px; }
+    .sidebar-badge.gold { background: var(--gold); }
+    .sidebar-footer { padding: 16px 12px; border-top: 1px solid #f0ece3; }
+    .sidebar-link.logout { color: #e53935; }
+    .sidebar-link.logout:hover { background: #fff5f5; color: #c62828; }
+
+    /* ===================== MAIN ===================== */
+    .main { margin-right: var(--sidebar-w); flex: 1; padding: 32px 36px; min-width: 0; }
+
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .page-title h1 { font-size: 26px; font-weight: 900; color: var(--text-dark); }
+    .page-title p  { font-size: 13px; color: #999; margin-top: 4px; }
+
+    .btn-donate-now {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      color: #fff; padding: 11px 26px; border-radius: 12px;
+      font-family: 'Cairo',sans-serif; font-size: 14px; font-weight: 800;
+      text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(46,139,87,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-donate-now:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(46,139,87,.45); }
+
+    /* ===================== KPI CARDS ===================== */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; margin-bottom: 28px; }
+    .kpi-card {
+      background: var(--white); border-radius: 18px; padding: 22px 20px;
+      border: 1.5px solid var(--card-border); position: relative; overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.09); }
+    .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .kpi-card:nth-child(1)::before { background: linear-gradient(to left,var(--green-mid),var(--green-stats)); }
+    .kpi-card:nth-child(2)::before { background: linear-gradient(to left,var(--gold),var(--gold-btn)); }
+    .kpi-card:nth-child(3)::before { background: linear-gradient(to left,#3b9fd1,#2d6a8f); }
+    .kpi-card:nth-child(4)::before { background: linear-gradient(to left,#e53935,#b71c1c); }
+    .kpi-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px; }
+    .kpi-card:nth-child(1) .kpi-icon { background: #e8f5e9; }
+    .kpi-card:nth-child(2) .kpi-icon { background: #fff8e8; }
+    .kpi-card:nth-child(3) .kpi-icon { background: #e3f2fd; }
+    .kpi-card:nth-child(4) .kpi-icon { background: #fff5f5; }
+    .kpi-num   { font-size: 28px; font-weight: 900; color: var(--text-dark); display: block; line-height: 1; margin-bottom: 5px; }
+    .kpi-label { font-size: 12.5px; color: #999; font-weight: 600; }
+    .kpi-change { position: absolute; top: 20px; left: 18px; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 20px; }
+    .kpi-change.up      { background: #e8f5e9; color: var(--green-mid); }
+    .kpi-change.neutral { background: #f5f5f5; color: #999; }
+
+    /* ===================== CONTENT GRID ===================== */
+    .content-grid { display: grid; grid-template-columns: 1fr 340px; gap: 22px; margin-bottom: 24px; }
+    .section-card { background: var(--white); border-radius: 18px; border: 1.5px solid var(--card-border); overflow: hidden; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 16px; border-bottom: 1px solid #f5f0e8; }
+    .section-head h3 { font-size: 15px; font-weight: 800; color: var(--text-dark); }
+    .section-head p  { font-size: 11.5px; color: #bbb; margin-top: 2px; }
+    .sec-btn { font-size: 12px; font-weight: 700; color: var(--green-mid); background: none; border: none; cursor: pointer; font-family: 'Cairo',sans-serif; text-decoration: none; transition: color .2s; }
+    .sec-btn:hover { color: var(--green-dark); }
+
+    .don-row { display: flex; align-items: center; padding: 14px 22px; border-bottom: 1px solid #fafaf8; gap: 14px; transition: background .2s; }
+    .don-row:last-child { border-bottom: none; }
+    .don-row:hover { background: #fdfcfa; }
+    .don-cat-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .don-info  { flex: 1; min-width: 0; }
+    .don-name  { font-size: 13.5px; font-weight: 700; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .don-date  { font-size: 11.5px; color: #bbb; margin-top: 2px; }
+    .don-amount { font-size: 14px; font-weight: 900; color: var(--green-mid); white-space: nowrap; }
+    .don-status { font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .status-done    { background: #e8f5e9; color: var(--green-mid); }
+    .status-pending { background: #fff8e8; color: var(--gold-btn); }
+
+    .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #fafaf8; }
+    .activity-item:last-child { border-bottom: none; }
+    .act-dot  { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+    .act-body { flex: 1; }
+    .act-text { font-size: 13px; color: var(--text-dark); font-weight: 600; line-height: 1.6; }
+    .act-text span { color: var(--green-mid); font-weight: 800; }
+    .act-time { font-size: 11px; color: #ccc; margin-top: 3px; }
+
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 36px; }
+
+    .camp-item { display: flex; gap: 14px; align-items: center; padding: 14px 22px; border-bottom: 1px solid #fafaf8; }
+    .camp-item:last-child { border-bottom: none; }
+    .camp-img  { width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0; font-size: 24px; display: flex; align-items: center; justify-content: center; }
+    .camp-info { flex: 1; min-width: 0; }
+    .camp-name { font-size: 13.5px; font-weight: 700; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+    .mini-prog-bar  { height: 5px; background: #eee; border-radius: 10px; overflow: hidden; margin-bottom: 4px; }
+    .mini-prog-fill { height: 100%; border-radius: 10px; background: linear-gradient(to left,var(--green-stats),var(--green-mid)); }
+    .camp-meta { display: flex; justify-content: space-between; font-size: 11px; color: #bbb; }
+    .camp-meta span:first-child { color: var(--green-mid); font-weight: 800; }
+    .btn-camp { padding: 8px 16px; border: 1.5px solid var(--green-mid); color: var(--green-mid); border-radius: 9px; font-family: 'Cairo',sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; background: none; flex-shrink: 0; transition: all .2s; text-decoration: none; display: inline-flex; align-items: center; }
+    .btn-camp:hover { background: var(--green-mid); color: #fff; }
+
+    .medals-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; padding: 18px; }
+    .medal-card { background: #fafaf8; border: 1.5px solid var(--card-border); border-radius: 14px; padding: 16px 10px; text-align: center; transition: transform .2s, box-shadow .2s; }
+    .medal-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+    .medal-card.earned { background: #f0fff4; border-color: #b2dfdb; }
+    .medal-card.locked { opacity: .45; }
+    .medal-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+    .medal-name { font-size: 11px; font-weight: 800; color: var(--text-dark); display: block; }
+    .medal-desc { font-size: 10px; color: #bbb; margin-top: 2px; display: block; }
+
+    /* ===================== FOOTER ===================== */
+    .site-footer { background: #0a2a17; padding: 50px 60px 28px; direction: rtl; margin-right: var(--sidebar-w); }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; margin: 0 auto 40px; }
+    .footer-brand .f-logo { font-size: 24px; font-weight: 900; color: var(--white); display: block; margin-bottom: 14px; }
+    .footer-brand .f-logo span { color: var(--gold); }
+    .footer-brand p { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.85; max-width: 240px; }
+    .f-col h4 { font-size: 14px; font-weight: 800; color: var(--white); margin-bottom: 16px; }
+    .f-col ul { list-style: none; }
+    .f-col ul li { margin-bottom: 9px; }
+    .f-col ul li a { text-decoration: none; font-size: 13px; color: rgba(255,255,255,.45); transition: color .2s; }
+    .f-col ul li a:hover { color: var(--gold); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.08); padding-top: 22px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-bottom p { font-size: 12.5px; color: rgba(255,255,255,.3); }
+    .socials { display: flex; gap: 10px; }
+    .socials a { width: 36px; height: 36px; border-radius: 9px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.5); font-size: 14px; text-decoration: none; transition: background .2s, border-color .2s; }
+    .socials a:hover { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+
+    /* ===================== PAGES ===================== */
+    .page { display: none; animation: pageFadeIn .35s ease; }
+    .page.active { display: block; }
+    @keyframes pageFadeIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+    /* ===================== TOAST ===================== */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(70px);
+      background: var(--green-dark); color: #fff;
+      padding: 10px 24px; border-radius: 30px;
+      font-size: 13.5px; font-weight: 700;
+      box-shadow: 0 8px 28px rgba(0,0,0,.22);
+      z-index: 99999; transition: transform .38s ease;
+      white-space: nowrap; max-width: calc(100vw - 32px);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media(max-width:1200px){
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
+      .content-grid { grid-template-columns: 1fr; }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: repeat(2,1fr); gap: 35px; }
+    }
+    @media(max-width:900px){
+      .sidebar { display: none; }
+      .main { margin-right: 0; padding: 24px 18px; }
+      .nav-search { display: none; }
+      .site-footer { margin-right: 0; padding: 45px 30px 24px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media(max-width:600px){
+      .kpi-grid { grid-template-columns: repeat(2,1fr); gap: 12px; }
+      .main { padding: 16px 12px; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .site-footer { padding: 40px 20px 22px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+      .amounts-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media(max-width:400px){ .kpi-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- =================== NAVBAR =================== -->
+<nav class="navbar">
+  <div class="nav-right">
+    <a href="index.html" class="logo">Na<span>bd</span></a>
+    <div class="nav-search">
+      <span class="nav-search-icon">🔍</span>
+      <input type="text" placeholder="ابحث عن مشروع أو حملة...">
+    </div>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-btn" id="btnNotif" onclick="togglePanel('notif')" title="الإشعارات">
+      🔔
+      <span class="nav-badge badge-red" id="notifBadge">4</span>
+    </div>
+    <div class="nav-btn" id="btnMsg" onclick="togglePanel('msg')" title="الرسائل">
+      💬
+      <span class="nav-badge badge-blue" id="msgBadge">2</span>
+    </div>
+    <div class="nav-user">
+      <div class="nav-user-info">
+        <span class="nav-user-name">أحمد محمد</span>
+        <span class="nav-user-role">متبرع</span>
+      </div>
+      <div class="nav-avatar">أ</div>
+    </div>
+  </div>
+</nav>
+
+<!-- =================== NOTIFICATIONS PANEL =================== -->
+<div class="fpanel" id="notifPanel">
+  <div class="fpanel-head">
+    <h3>🔔 الإشعارات <span class="fpanel-head-cnt" id="notifCnt" style="background:#e53935">4</span></h3>
+    <div class="fpanel-actions">
+      <button class="fpanel-markall" onclick="markAllNotifs()">تحديد الكل كمقروء</button>
+      <button class="fpanel-close"   onclick="closePanel('notif')">✕</button>
+    </div>
+  </div>
+  <div class="fpanel-body" id="notifList">
+    <div class="ni unread" onclick="readNi(this)">
+      <div class="ni-ico" style="background:#e8f5e9">💚</div>
+      <div class="ni-body"><div class="ni-title">تم تأكيد تبرعك بـ 500 ر.س</div><div class="ni-sub">لمشروع مدرسة الأطفال المحرومين</div><span class="ni-time">منذ 3 أيام</span></div>
+    </div>
+    <div class="ni unread" onclick="readNi(this)">
+      <div class="ni-ico" style="background:#fff8e8">🎖️</div>
+      <div class="ni-body"><div class="ni-title">مبروك! حصلت على شارة جديدة</div><div class="ni-sub">شارة "المتبرع الوفي" مكتسبة</div><span class="ni-time">منذ أسبوع</span></div>
+    </div>
+    <div class="ni unread" onclick="readNi(this)">
+      <div class="ni-ico" style="background:#e3f2fd">📢</div>
+      <div class="ni-body"><div class="ni-title">حملة بئر المياه وصلت 93%</div><div class="ni-sub">تحتاج دعمك لإكمال الهدف!</div><span class="ni-time">منذ 9 أيام</span></div>
+    </div>
+    <div class="ni unread" onclick="readNi(this)">
+      <div class="ni-ico" style="background:#fce4ec">💌</div>
+      <div class="ni-body"><div class="ni-title">رسالة شكر من رعاية الأيتام</div><div class="ni-sub">شكراً على تبرعك الكريم</div><span class="ni-time">منذ أسبوعين</span></div>
+    </div>
+    <div class="ni" onclick="readNi(this)">
+      <div class="ni-ico" style="background:#e8f5e9">🏆</div>
+      <div class="ni-body"><div class="ni-title">وصلت لمستوى متبرع ذهبي 🎉</div><div class="ni-sub">تهانينا على هذا الإنجاز الرائع</div><span class="ni-time">منذ شهر</span></div>
+    </div>
+    <div class="ni" onclick="readNi(this)">
+      <div class="ni-ico" style="background:#fff3e0">📊</div>
+      <div class="ni-body"><div class="ni-title">تقرير شهر يناير جاهز</div><div class="ni-sub">راجع ملخص تبرعاتك الشهرية</div><span class="ni-time">منذ شهر</span></div>
+    </div>
+  </div>
+  <div class="fpanel-footer"><a onclick="navigateTo('notifications');closePanel('notif')">عرض كل الإشعارات ←</a></div>
+</div>
+
+<!-- =================== MESSAGES PANEL =================== -->
+<div class="fpanel" id="msgPanel">
+  <div class="fpanel-head">
+    <h3>💬 الرسائل <span class="fpanel-head-cnt" id="msgCnt" style="background:#2196f3">2</span></h3>
+    <div class="fpanel-actions">
+      <button class="fpanel-markall" onclick="markAllMsgs()">تحديد الكل كمقروء</button>
+      <button class="fpanel-close"   onclick="closePanel('msg')">✕</button>
+    </div>
+  </div>
+  <div class="fpanel-body" id="msgList">
+    <div class="mi unread" onclick="readMi(this)">
+      <div class="mi-av" style="background:linear-gradient(135deg,#1a6b3c,#2e8b57)">ن</div>
+      <div class="mi-body"><div class="mi-name">فريق دعم Nabd</div><div class="mi-text">شكراً لك على تبرعك المستمر! لديك رسالة مهمة...</div><span class="mi-time">منذ ساعتين</span></div>
+    </div>
+    <div class="mi unread" onclick="readMi(this)">
+      <div class="mi-av" style="background:linear-gradient(135deg,#c8a84b,#b8943a)">م</div>
+      <div class="mi-body"><div class="mi-name">مشروع المدرسة</div><div class="mi-text">وصلنا 85% من هدف التمويل بفضل دعمكم الكريم</div><span class="mi-time">منذ يوم</span></div>
+    </div>
+    <div class="mi" onclick="readMi(this)">
+      <div class="mi-av" style="background:linear-gradient(135deg,#3b9fd1,#1a6b9f)">ع</div>
+      <div class="mi-body"><div class="mi-name">عيادة متنقلة</div><div class="mi-text">تم تقديم الرعاية الصحية لـ 120 شخص هذا الأسبوع</div><span class="mi-time">منذ 3 أيام</span></div>
+    </div>
+    <div class="mi" onclick="readMi(this)">
+      <div class="mi-av" style="background:linear-gradient(135deg,#7b1fa2,#4a148c)">ب</div>
+      <div class="mi-body"><div class="mi-name">بئر المياه النظيفة</div><div class="mi-text">تبقى 2,000 ر.س فقط لإكمال مشروع البئر!</div><span class="mi-time">منذ أسبوع</span></div>
+    </div>
+    <div class="mi" onclick="readMi(this)">
+      <div class="mi-av" style="background:linear-gradient(135deg,#e53935,#b71c1c)">ر</div>
+      <div class="mi-body"><div class="mi-name">رعاية الأيتام</div><div class="mi-text">جزاك الله خيراً على دعمك المتواصل</div><span class="mi-time">منذ أسبوعين</span></div>
+    </div>
+  </div>
+  <div class="fpanel-footer"><a onclick="showToast('💬 صفحة الرسائل قريباً!');closePanel('msg')">عرض كل الرسائل ←</a></div>
+</div>
+
+<!-- =================== DONATE MODAL =================== -->
+<div class="modal-ov" id="donateOv" onclick="if(event.target===this)closeDonate()">
+  <div class="donate-modal">
+    <div class="dm-head">
+      <h3>💚 تبرع الآن</h3>
+      <button class="dm-close" onclick="closeDonate()">✕</button>
+    </div>
+    <div class="dm-body">
+      <div class="steps-bar">
+        <div class="step-dot active" id="sd1">١</div>
+        <div class="step-line" id="sl1"></div>
+        <div class="step-dot" id="sd2">٢</div>
+        <div class="step-line" id="sl2"></div>
+        <div class="step-dot" id="sd3">٣</div>
+      </div>
+      <div class="steps-labels">
+        <span>اختر الحملة</span>
+        <span>ادخل بياناتك</span>
+        <span>تبرع</span>
+      </div>
+      <div class="dm-step active" id="dms1">
+        <span class="dm-section-label">اختر نوع التبرع</span>
+        <div class="camp-opts">
+          <div class="camp-opt sel" onclick="selCamp(this,'📚','مدرسة الأطفال المحرومين',85)">
+            <div class="co-ico" style="background:#e8f5e9">📚</div>
+            <div class="co-info"><div class="co-name">مدرسة الأطفال المحرومين</div><div class="co-prog"><div class="co-bar"><div class="co-fill" style="width:85%"></div></div><span class="co-pct">85%</span></div></div>
+            <div class="co-check">✓</div>
+          </div>
+          <div class="camp-opt" onclick="selCamp(this,'🏥','عيادة طبية متنقلة',56)">
+            <div class="co-ico" style="background:#e3f2fd">🏥</div>
+            <div class="co-info"><div class="co-name">عيادة طبية متنقلة</div><div class="co-prog"><div class="co-bar"><div class="co-fill" style="width:56%"></div></div><span class="co-pct">56%</span></div></div>
+            <div class="co-check"></div>
+          </div>
+          <div class="camp-opt" onclick="selCamp(this,'💧','بئر مياه نظيفة',93)">
+            <div class="co-ico" style="background:#e3f2fd">💧</div>
+            <div class="co-info"><div class="co-name">بئر مياه نظيفة</div><div class="co-prog"><div class="co-bar"><div class="co-fill" style="width:93%"></div></div><span class="co-pct">93%</span></div></div>
+            <div class="co-check"></div>
+          </div>
+          <div class="camp-opt" onclick="selCamp(this,'👦','كفالة الأيتام',40)">
+            <div class="co-ico" style="background:#fce4ec">👦</div>
+            <div class="co-info"><div class="co-name">كفالة الأيتام</div><div class="co-prog"><div class="co-bar"><div class="co-fill" style="width:40%"></div></div><span class="co-pct">40%</span></div></div>
+            <div class="co-check"></div>
+          </div>
+        </div>
+        <div class="dm-actions">
+          <button class="dm-btn-next" onclick="goStep(2)">التالي ←</button>
+        </div>
+      </div>
+      <div class="dm-step" id="dms2">
+        <span class="dm-section-label">اختر المبلغ</span>
+        <div class="amounts-grid">
+          <div class="amt-chip" onclick="selAmt(this,50)"><span class="amt-num">50</span><span class="amt-cur">ريال</span></div>
+          <div class="amt-chip sel" onclick="selAmt(this,100)"><span class="amt-num">100</span><span class="amt-cur">ريال</span></div>
+          <div class="amt-chip" onclick="selAmt(this,200)"><span class="amt-num">200</span><span class="amt-cur">ريال</span></div>
+          <div class="amt-chip" onclick="selAmt(this,500)"><span class="amt-num">500</span><span class="amt-cur">ريال</span></div>
+          <div class="amt-chip" onclick="selAmt(this,1000)"><span class="amt-num">1,000</span><span class="amt-cur">ريال</span></div>
+          <div class="amt-chip" onclick="selAmt(this,null)"><span class="amt-num">✏️</span><span class="amt-cur">مبلغ آخر</span></div>
+        </div>
+        <div class="custom-amt-wrap">
+          <span class="custom-amt-lbl">ر.س</span>
+          <input type="number" id="customAmt" placeholder="أدخل مبلغاً آخر..." min="10" oninput="onCustomAmt(this)">
+        </div>
+        <div class="dm-actions">
+          <button class="dm-btn-back" onclick="goStep(1)">← رجوع</button>
+          <button class="dm-btn-next" onclick="goStep(3)">التالي ←</button>
+        </div>
+      </div>
+      <div class="dm-step" id="dms3">
+        <span class="dm-section-label">طريقة الدفع</span>
+        <div class="pay-methods">
+          <div class="pay-method sel" onclick="selPay(this)"><div class="pay-ico">💳</div><div class="pay-name">بطاقة بنكية</div><div class="pay-check">✓</div></div>
+          <div class="pay-method" onclick="selPay(this)"><div class="pay-ico">📱</div><div class="pay-name">STC Pay</div><div class="pay-check"></div></div>
+          <div class="pay-method" onclick="selPay(this)"><div class="pay-ico">🏦</div><div class="pay-name">تحويل بنكي</div><div class="pay-check"></div></div>
+          <div class="pay-method" onclick="selPay(this)"><div class="pay-ico">🍎</div><div class="pay-name">Apple Pay</div><div class="pay-check"></div></div>
+        </div>
+        <div class="don-summary">
+          <div class="ds-row"><span class="ds-lbl">الحملة</span><span class="ds-val" id="sumCamp">مدرسة الأطفال المحرومين</span></div>
+          <div class="ds-row"><span class="ds-lbl">المبلغ</span><span class="ds-val" id="sumAmt">100 ر.س</span></div>
+          <div class="ds-row"><span class="ds-lbl">طريقة الدفع</span><span class="ds-val" id="sumPay">بطاقة بنكية</span></div>
+          <div class="ds-row"><span class="ds-lbl">الإجمالي</span><span class="ds-total" id="sumTotal">100 ر.س</span></div>
+        </div>
+        <div class="dm-actions">
+          <button class="dm-btn-back" onclick="goStep(2)">← رجوع</button>
+          <button class="dm-btn-next" onclick="completeDonate()">💚 أكد التبرع</button>
+        </div>
+      </div>
+      <div class="dm-step" id="dms4">
+        <div class="success-wrap">
+          <div class="success-circle">✓</div>
+          <h3>تم التبرع بنجاح! 🎉</h3>
+          <span class="success-amount" id="successAmt">100 ر.س</span>
+          <span class="success-project" id="successProj">📚 مدرسة الأطفال المحرومين</span>
+          <p>جزاك الله خيراً على تبرعك الكريم.<br>سيصلك تأكيد على بريدك الإلكتروني.</p>
+          <button class="dm-btn-next" style="max-width:180px;margin:0 auto;display:block" onclick="closeDonate()">إغلاق</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">أ</div>
+      <span class="sidebar-name">أحمد محمد</span>
+      <span class="sidebar-email">ahmed@example.com</span>
+      <div class="sidebar-level">⭐ متبرع ذهبي</div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="sidebar-section-label">الرئيسية</span>
+      <a class="sidebar-link active" data-page="dashboard"><span class="sidebar-icon">🏠</span> لوحة التحكم</a>
+      <a class="sidebar-link" data-page="donations"><span class="sidebar-icon">💰</span> تبرعاتي<span class="sidebar-badge">12</span></a>
+      <a class="sidebar-link" data-page="stats"><span class="sidebar-icon">📊</span> إحصائياتي</a>
+      <span class="sidebar-section-label" style="margin-top:10px">المشاريع</span>
+      <a class="sidebar-link" data-page="projects"><span class="sidebar-icon">📋</span> تصفح المشاريع</a>
+      <a class="sidebar-link" data-page="favorites"><span class="sidebar-icon">⭐</span> المفضلة<span class="sidebar-badge gold">3</span></a>
+      <a class="sidebar-link" data-page="campaigns"><span class="sidebar-icon">🏆</span> الحملات الفعالة</a>
+      <span class="sidebar-section-label" style="margin-top:10px">حسابي</span>
+      <a class="sidebar-link" data-page="profile"><span class="sidebar-icon">👤</span> الملف الشخصي</a>
+      <a class="sidebar-link" data-page="notifications"><span class="sidebar-icon">🔔</span> الإشعارات</a>
+      <a class="sidebar-link" data-page="settings"><span class="sidebar-icon">⚙️</span> الإعدادات</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a class="sidebar-link logout" data-page="logout"><span class="sidebar-icon">🚪</span> تسجيل الخروج</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div class="page-title">
+          <h1>أهلاً بك، أحمد 👋</h1>
+          <p>الاثنين، 23 فبراير 2026 — هنا ملخص نشاطك</p>
+        </div>
+        <!-- ✅ التعديل هنا: الزر بقى لينك يروح لـ donate.html -->
+        <a href="donate.html" class="btn-donate-now">💚 تبرع الآن</a>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card"><span class="kpi-change up">↑ 12%</span><div class="kpi-icon">💚</div><span class="kpi-num counter" data-target="4850" data-suffix=" ر.س">0</span><span class="kpi-label">إجمالي تبرعاتي</span></div>
+        <div class="kpi-card"><span class="kpi-change up">↑ 3</span><div class="kpi-icon">📋</div><span class="kpi-num counter" data-target="12">0</span><span class="kpi-label">عدد التبرعات</span></div>
+        <div class="kpi-card"><span class="kpi-change up">↑ 1</span><div class="kpi-icon">🏆</div><span class="kpi-num counter" data-target="5">0</span><span class="kpi-label">حملات مدعومة</span></div>
+        <div class="kpi-card"><span class="kpi-change neutral">—</span><div class="kpi-icon">🎖️</div><span class="kpi-num counter" data-target="3">0</span><span class="kpi-label">الشارات المكتسبة</span></div>
+      </div>
+
+      <div class="content-grid">
+        <div class="section-card">
+          <div class="section-head"><div><h3>سجل التبرعات</h3><p>آخر 5 تبرعات</p></div><a class="sec-btn" data-goto="donations">عرض الكل ←</a></div>
+          <div class="don-row"><div class="don-cat-icon" style="background:#e8f5e9">📚</div><div class="don-info"><div class="don-name">مدرسة للأطفال المحرومين</div><div class="don-date">20 فبراير 2026</div></div><div class="don-amount">500 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+          <div class="don-row"><div class="don-cat-icon" style="background:#e3f2fd">🏥</div><div class="don-info"><div class="don-name">عيادة طبية متنقلة</div><div class="don-date">14 فبراير 2026</div></div><div class="don-amount">300 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+          <div class="don-row"><div class="don-cat-icon" style="background:#fff3e0">🛒</div><div class="don-info"><div class="don-name">اعانة غذائية طارئة</div><div class="don-date">8 فبراير 2026</div></div><div class="don-amount">200 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+          <div class="don-row"><div class="don-cat-icon" style="background:#e3f2fd">💧</div><div class="don-info"><div class="don-name">بئر مياه نظيفة</div><div class="don-date">1 فبراير 2026</div></div><div class="don-amount">150 ر.س</div><span class="don-status status-pending">قيد المعالجة</span></div>
+          <div class="don-row"><div class="don-cat-icon" style="background:#fce4ec">👦</div><div class="don-info"><div class="don-name">رعاية الأيتام</div><div class="don-date">22 يناير 2026</div></div><div class="don-amount">400 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        </div>
+        <div class="section-card">
+          <div class="section-head"><div><h3>آخر النشاطات</h3></div></div>
+          <div class="activity-item"><div class="act-dot" style="background:#e8f5e9">💚</div><div class="act-body"><div class="act-text">تبرعت بـ <span>500 ر.س</span> لمشروع المدرسة</div><div class="act-time">منذ 3 أيام</div></div></div>
+          <div class="activity-item"><div class="act-dot" style="background:#fff8e8">🎖️</div><div class="act-body"><div class="act-text">حصلت على شارة <span>المتبرع الوفي</span></div><div class="act-time">منذ أسبوع</div></div></div>
+          <div class="activity-item"><div class="act-dot" style="background:#e3f2fd">📋</div><div class="act-body"><div class="act-text">تمت متابعة حملة <span>بئر مياه نظيفة</span></div><div class="act-time">منذ 9 أيام</div></div></div>
+          <div class="activity-item"><div class="act-dot" style="background:#fce4ec">⭐</div><div class="act-body"><div class="act-text">أضفت <span>رعاية الأيتام</span> للمفضلة</div><div class="act-time">منذ 2 أسبوع</div></div></div>
+          <div class="activity-item"><div class="act-dot" style="background:#e8f5e9">🏆</div><div class="act-body"><div class="act-text">وصلت لمستوى <span>متبرع ذهبي</span></div><div class="act-time">منذ شهر</div></div></div>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <div class="section-card">
+          <div class="section-head"><div><h3>الحملات التي أدعمها</h3><p>تابع تقدم حملاتك</p></div><a class="sec-btn" data-goto="campaigns">عرض الكل ←</a></div>
+          <div class="camp-item"><div class="camp-img" style="background:#e8f5e9">📚</div><div class="camp-info"><div class="camp-name">مدرسة للأطفال المحرومين</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:85%"></div></div><div class="camp-meta"><span>85,000 ر.س</span><span>الهدف: 100,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+          <div class="camp-item"><div class="camp-img" style="background:#e3f2fd">🏥</div><div class="camp-info"><div class="camp-name">عيادة طبية متنقلة</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:56%"></div></div><div class="camp-meta"><span>45,000 ر.س</span><span>الهدف: 80,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+          <div class="camp-item"><div class="camp-img" style="background:#e3f2fd">💧</div><div class="camp-info"><div class="camp-name">بئر مياه نظيفة</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:93%"></div></div><div class="camp-meta"><span>28,000 ر.س</span><span>الهدف: 30,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+        </div>
+        <div class="section-card">
+          <div class="section-head"><div><h3>شاراتي</h3><p>3 من 6 شارات مكتسبة</p></div></div>
+          <div class="medals-grid">
+            <div class="medal-card earned"><span class="medal-icon">💚</span><span class="medal-name">أول تبرع</span><span class="medal-desc">مكتسبة</span></div>
+            <div class="medal-card earned"><span class="medal-icon">🎖️</span><span class="medal-name">المتبرع الوفي</span><span class="medal-desc">مكتسبة</span></div>
+            <div class="medal-card earned"><span class="medal-icon">⭐</span><span class="medal-name">متبرع ذهبي</span><span class="medal-desc">مكتسبة</span></div>
+            <div class="medal-card locked"><span class="medal-icon">🏅</span><span class="medal-name">10 تبرعات</span><span class="medal-desc">تبرع مرتين أخرى</span></div>
+            <div class="medal-card locked"><span class="medal-icon">🦁</span><span class="medal-name">القلب الكبير</span><span class="medal-desc">تبرع بـ 10,000 ر.س</span></div>
+            <div class="medal-card locked"><span class="medal-icon">👑</span><span class="medal-name">متبرع بلاتيني</span><span class="medal-desc">مستوى خاص</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DONATIONS -->
+    <div class="page" id="page-donations">
+      <div class="page-header"><div class="page-title"><h1>💰 تبرعاتي</h1><p>سجل كامل بجميع تبرعاتك</p></div></div>
+      <div class="section-card">
+        <div class="section-head"><div><h3>جميع التبرعات</h3><p>12 تبرع إجمالاً</p></div></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#e8f5e9">📚</div><div class="don-info"><div class="don-name">مدرسة للأطفال المحرومين</div><div class="don-date">20 فبراير 2026</div></div><div class="don-amount">500 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#e3f2fd">🏥</div><div class="don-info"><div class="don-name">عيادة طبية متنقلة</div><div class="don-date">14 فبراير 2026</div></div><div class="don-amount">300 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#fff3e0">🛒</div><div class="don-info"><div class="don-name">اعانة غذائية طارئة</div><div class="don-date">8 فبراير 2026</div></div><div class="don-amount">200 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#e3f2fd">💧</div><div class="don-info"><div class="don-name">بئر مياه نظيفة</div><div class="don-date">1 فبراير 2026</div></div><div class="don-amount">150 ر.س</div><span class="don-status status-pending">قيد المعالجة</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#fce4ec">👦</div><div class="don-info"><div class="don-name">رعاية الأيتام</div><div class="don-date">22 يناير 2026</div></div><div class="don-amount">400 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#e8f5e9">📚</div><div class="don-info"><div class="don-name">دعم التعليم الريفي</div><div class="don-date">10 يناير 2026</div></div><div class="don-amount">750 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#e3f2fd">🏥</div><div class="don-info"><div class="don-name">أدوية للمحتاجين</div><div class="don-date">2 يناير 2026</div></div><div class="don-amount">600 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#e3f2fd">💧</div><div class="don-info"><div class="don-name">مشروع مياه الشرب</div><div class="don-date">20 ديسمبر 2025</div></div><div class="don-amount">500 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#fce4ec">👦</div><div class="don-info"><div class="don-name">كفالة يتيم</div><div class="don-date">10 ديسمبر 2025</div></div><div class="don-amount">350 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#fff3e0">🛒</div><div class="don-info"><div class="don-name">وجبات رمضان</div><div class="don-date">1 ديسمبر 2025</div></div><div class="don-amount">200 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#e8f5e9">📚</div><div class="don-info"><div class="don-name">حقيبة مدرسية</div><div class="don-date">15 نوفمبر 2025</div></div><div class="don-amount">250 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+        <div class="don-row"><div class="don-cat-icon" style="background:#e3f2fd">🏥</div><div class="don-info"><div class="don-name">عملية جراحية طارئة</div><div class="don-date">5 نوفمبر 2025</div></div><div class="don-amount">650 ر.س</div><span class="don-status status-done">مكتمل</span></div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="page" id="page-stats">
+      <div class="page-header"><div class="page-title"><h1>📊 إحصائياتي</h1><p>تحليل شامل لنشاط تبرعاتك</p></div></div>
+      <div class="kpi-grid" style="margin-bottom:24px">
+        <div class="kpi-card"><div class="kpi-icon">💚</div><span class="kpi-num">4,850</span><span class="kpi-label">إجمالي التبرعات (ر.س)</span></div>
+        <div class="kpi-card"><div class="kpi-icon">📋</div><span class="kpi-num">12</span><span class="kpi-label">عدد العمليات</span></div>
+        <div class="kpi-card"><div class="kpi-icon">📅</div><span class="kpi-num">404</span><span class="kpi-label">متوسط شهري (ر.س)</span></div>
+        <div class="kpi-card"><div class="kpi-icon">🏆</div><span class="kpi-num">5</span><span class="kpi-label">مشاريع مدعومة</span></div>
+      </div>
+      <div class="section-card">
+        <div class="section-head"><div><h3>توزيع التبرعات حسب الفئة</h3></div></div>
+        <div style="padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div style="background:#f0fff4;border-radius:12px;padding:20px;border:1.5px solid #b2dfdb"><div style="font-size:28px;margin-bottom:8px">📚</div><div style="font-size:20px;font-weight:900;color:var(--green-mid)">1,500 ر.س</div><div style="font-size:13px;color:#888;margin-top:4px">تعليم — 31%</div><div style="height:6px;background:#eee;border-radius:10px;margin-top:10px;overflow:hidden"><div style="width:31%;height:100%;background:var(--green-mid);border-radius:10px"></div></div></div>
+          <div style="background:#fef9f0;border-radius:12px;padding:20px;border:1.5px solid #f0dfa0"><div style="font-size:28px;margin-bottom:8px">🏥</div><div style="font-size:20px;font-weight:900;color:var(--gold-btn)">1,550 ر.س</div><div style="font-size:13px;color:#888;margin-top:4px">صحة — 32%</div><div style="height:6px;background:#eee;border-radius:10px;margin-top:10px;overflow:hidden"><div style="width:32%;height:100%;background:var(--gold);border-radius:10px"></div></div></div>
+          <div style="background:#f0f8ff;border-radius:12px;padding:20px;border:1.5px solid #b3d4f0"><div style="font-size:28px;margin-bottom:8px">💧</div><div style="font-size:20px;font-weight:900;color:#2d6a8f">650 ر.س</div><div style="font-size:13px;color:#888;margin-top:4px">مياه — 13%</div><div style="height:6px;background:#eee;border-radius:10px;margin-top:10px;overflow:hidden"><div style="width:13%;height:100%;background:#3b9fd1;border-radius:10px"></div></div></div>
+          <div style="background:#fff5f8;border-radius:12px;padding:20px;border:1.5px solid #f0b8c8"><div style="font-size:28px;margin-bottom:8px">👦</div><div style="font-size:20px;font-weight:900;color:#c62570">750 ر.س</div><div style="font-size:13px;color:#888;margin-top:4px">أيتام — 15%</div><div style="height:6px;background:#eee;border-radius:10px;margin-top:10px;overflow:hidden"><div style="width:15%;height:100%;background:#e91e8c;border-radius:10px"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="page" id="page-projects">
+      <div class="page-header"><div class="page-title"><h1>📋 تصفح المشاريع</h1><p>جميع الحملات والمشاريع المتاحة</p></div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px">
+        <div class="section-card"><div style="background:linear-gradient(135deg,#1a5c38,#4caf7d);height:140px;display:flex;align-items:center;justify-content:center;font-size:50px"></div><div style="padding:20px"><div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">📚 تعليم</div><h3 style="font-size:16px;font-weight:800;margin-bottom:8px">مدرسة للأطفال المحرومين</h3><p style="font-size:13px;color:#888;margin-bottom:14px">نبني مدرسة جديدة لـ 300 طفل في المناطق الريفية.</p><div style="height:6px;background:#eee;border-radius:10px;overflow:hidden;margin-bottom:8px"><div style="width:85%;height:100%;background:var(--green-mid);border-radius:10px"></div></div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px"><span style="color:var(--green-mid);font-weight:800">85,000 ر.س</span><span style="color:#bbb">الهدف: 100,000</span></div><a href="donate.html" class="btn-camp" style="width:100%;padding:10px;display:block;text-align:center">تبرع الآن</a></div></div>
+        <div class="section-card"><div style="background:linear-gradient(135deg,#c9a84c,#e8c97a);height:140px;display:flex;align-items:center;justify-content:center;font-size:50px"></div><div style="padding:20px"><div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">🏥 صحة</div><h3 style="font-size:16px;font-weight:800;margin-bottom:8px">عيادة طبية متنقلة</h3><p style="font-size:13px;color:#888;margin-bottom:14px">توفير رعاية صحية مجانية للمجتمعات النائية.</p><div style="height:6px;background:#eee;border-radius:10px;overflow:hidden;margin-bottom:8px"><div style="width:56%;height:100%;background:var(--green-mid);border-radius:10px"></div></div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px"><span style="color:var(--green-mid);font-weight:800">45,000 ر.س</span><span style="color:#bbb">الهدف: 80,000</span></div><a href="donate.html" class="btn-camp" style="width:100%;padding:10px;display:block;text-align:center">تبرع الآن</a></div></div>
+        <div class="section-card"><div style="background:linear-gradient(135deg,#2d6a8f,#4ca8d0);height:140px;display:flex;align-items:center;justify-content:center;font-size:50px"></div><div style="padding:20px"><div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">💧 مياه</div><h3 style="font-size:16px;font-weight:800;margin-bottom:8px">بئر مياه نظيفة</h3><p style="font-size:13px;color:#888;margin-bottom:14px">حفر بئر مياه يستفيد منها أكثر من 500 شخص.</p><div style="height:6px;background:#eee;border-radius:10px;overflow:hidden;margin-bottom:8px"><div style="width:93%;height:100%;background:var(--green-mid);border-radius:10px"></div></div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px"><span style="color:var(--green-mid);font-weight:800">28,000 ر.س</span><span style="color:#bbb">الهدف: 30,000</span></div><a href="donate.html" class="btn-camp" style="width:100%;padding:10px;display:block;text-align:center">تبرع الآن</a></div></div>
+        <div class="section-card"><div style="background:linear-gradient(135deg,#8b1a1a,#cc3333);height:140px;display:flex;align-items:center;justify-content:center;font-size:50px"></div><div style="padding:20px"><div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">👦 أيتام</div><h3 style="font-size:16px;font-weight:800;margin-bottom:8px">كفالة الأيتام</h3><p style="font-size:13px;color:#888;margin-bottom:14px">توفير الرعاية الشاملة لأطفال الأيتام.</p><div style="height:6px;background:#eee;border-radius:10px;overflow:hidden;margin-bottom:8px"><div style="width:40%;height:100%;background:var(--green-mid);border-radius:10px"></div></div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px"><span style="color:var(--green-mid);font-weight:800">20,000 ر.س</span><span style="color:#bbb">الهدف: 50,000</span></div><a href="donate.html" class="btn-camp" style="width:100%;padding:10px;display:block;text-align:center">تبرع الآن</a></div></div>
+      </div>
+    </div>
+
+    <!-- FAVORITES -->
+    <div class="page" id="page-favorites">
+      <div class="page-header"><div class="page-title"><h1>⭐ المفضلة</h1><p>المشاريع التي حفظتها</p></div></div>
+      <div class="section-card">
+        <div class="section-head"><div><h3>مشاريعك المفضلة</h3><p>3 مشاريع محفوظة</p></div></div>
+        <div class="camp-item"><div class="camp-img" style="background:#e8f5e9">📚</div><div class="camp-info"><div class="camp-name">مدرسة للأطفال المحرومين</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:85%"></div></div><div class="camp-meta"><span>85,000 ر.س</span><span>الهدف: 100,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+        <div class="camp-item"><div class="camp-img" style="background:#e3f2fd">💧</div><div class="camp-info"><div class="camp-name">بئر مياه نظيفة</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:93%"></div></div><div class="camp-meta"><span>28,000 ر.س</span><span>الهدف: 30,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+        <div class="camp-item"><div class="camp-img" style="background:#fce4ec">👦</div><div class="camp-info"><div class="camp-name">كفالة الأيتام</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:40%"></div></div><div class="camp-meta"><span>20,000 ر.س</span><span>الهدف: 50,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+      </div>
+    </div>
+
+    <!-- CAMPAIGNS -->
+    <div class="page" id="page-campaigns">
+      <div class="page-header"><div class="page-title"><h1>🏆 الحملات الفعالة</h1><p>حملات تحتاج دعمك الآن</p></div></div>
+      <div class="section-card">
+        <div class="section-head"><div><h3>الحملات الجارية</h3><p>5 حملات نشطة</p></div></div>
+        <div class="camp-item"><div class="camp-img" style="background:#e8f5e9">📚</div><div class="camp-info"><div class="camp-name">مدرسة للأطفال المحرومين</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:85%"></div></div><div class="camp-meta"><span>85,000 ر.س</span><span>الهدف: 100,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+        <div class="camp-item"><div class="camp-img" style="background:#e3f2fd">🏥</div><div class="camp-info"><div class="camp-name">عيادة طبية متنقلة</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:56%"></div></div><div class="camp-meta"><span>45,000 ر.س</span><span>الهدف: 80,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+        <div class="camp-item"><div class="camp-img" style="background:#e3f2fd">💧</div><div class="camp-info"><div class="camp-name">بئر مياه نظيفة</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:93%"></div></div><div class="camp-meta"><span>28,000 ر.س</span><span>الهدف: 30,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+        <div class="camp-item"><div class="camp-img" style="background:#fce4ec">👦</div><div class="camp-info"><div class="camp-name">كفالة الأيتام</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:40%"></div></div><div class="camp-meta"><span>20,000 ر.س</span><span>الهدف: 50,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+        <div class="camp-item"><div class="camp-img" style="background:#fff3e0">🛒</div><div class="camp-info"><div class="camp-name">سلة غذائية للأسر المحتاجة</div><div class="mini-prog-bar"><div class="mini-prog-fill" style="width:65%"></div></div><div class="camp-meta"><span>13,000 ر.س</span><span>الهدف: 20,000 ر.س</span></div></div><a href="donate.html" class="btn-camp">تبرع</a></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="page" id="page-profile">
+      <div class="page-header"><div class="page-title"><h1>👤 الملف الشخصي</h1><p>بياناتك الشخصية</p></div></div>
+      <div class="section-card">
+        <div style="padding:32px;display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+          <div style="width:100px;height:100px;border-radius:24px;background:linear-gradient(135deg,var(--gold),var(--gold-btn));display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;color:#fff;box-shadow:0 8px 24px rgba(200,168,75,.4);flex-shrink:0">أ</div>
+          <div style="flex:1;min-width:220px"><h2 style="font-size:22px;font-weight:900;color:var(--text-dark);margin-bottom:4px">أحمد محمد</h2><p style="font-size:13px;color:#888;margin-bottom:16px">ahmed@example.com</p><div style="display:inline-flex;align-items:center;gap:6px;background:#fff8e8;border:1px solid #f0dfa0;color:var(--gold-btn);font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px">⭐ متبرع ذهبي</div></div>
+        </div>
+        <div style="padding:0 32px 32px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div style="background:#fafaf8;border-radius:12px;padding:18px;border:1.5px solid var(--card-border)"><div style="font-size:11px;font-weight:700;color:#bbb;letter-spacing:1px;margin-bottom:8px">الاسم الكامل</div><div style="font-size:14px;font-weight:700;color:var(--text-dark)">أحمد محمد علي</div></div>
+          <div style="background:#fafaf8;border-radius:12px;padding:18px;border:1.5px solid var(--card-border)"><div style="font-size:11px;font-weight:700;color:#bbb;letter-spacing:1px;margin-bottom:8px">البريد الإلكتروني</div><div style="font-size:14px;font-weight:700;color:var(--text-dark)">ahmed@example.com</div></div>
+          <div style="background:#fafaf8;border-radius:12px;padding:18px;border:1.5px solid var(--card-border)"><div style="font-size:11px;font-weight:700;color:#bbb;letter-spacing:1px;margin-bottom:8px">رقم الجوال</div><div style="font-size:14px;font-weight:700;color:var(--text-dark)">+966 50 000 0000</div></div>
+          <div style="background:#fafaf8;border-radius:12px;padding:18px;border:1.5px solid var(--card-border)"><div style="font-size:11px;font-weight:700;color:#bbb;letter-spacing:1px;margin-bottom:8px">تاريخ الانضمام</div><div style="font-size:14px;font-weight:700;color:var(--text-dark)">1 يناير 2025</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS PAGE -->
+    <div class="page" id="page-notifications">
+      <div class="page-header"><div class="page-title"><h1>🔔 الإشعارات</h1><p>آخر التنبيهات والأخبار</p></div></div>
+      <div class="section-card">
+        <div class="activity-item"><div class="act-dot" style="background:#e8f5e9">💚</div><div class="act-body"><div class="act-text">تم تأكيد تبرعك بـ <span>500 ر.س</span> لمشروع المدرسة</div><div class="act-time">منذ 3 أيام</div></div></div>
+        <div class="activity-item"><div class="act-dot" style="background:#fff8e8">🎖️</div><div class="act-body"><div class="act-text">مبروك! حصلت على شارة <span>المتبرع الوفي</span></div><div class="act-time">منذ أسبوع</div></div></div>
+        <div class="activity-item"><div class="act-dot" style="background:#e3f2fd">📢</div><div class="act-body"><div class="act-text">حملة <span>بئر مياه نظيفة</span> وصلت 93% من هدفها!</div><div class="act-time">منذ 9 أيام</div></div></div>
+        <div class="activity-item"><div class="act-dot" style="background:#fce4ec">💌</div><div class="act-body"><div class="act-text">رسالة شكر من مشروع <span>رعاية الأيتام</span></div><div class="act-time">منذ أسبوعين</div></div></div>
+        <div class="activity-item"><div class="act-dot" style="background:#e8f5e9">🏆</div><div class="act-body"><div class="act-text">وصلت لمستوى <span>متبرع ذهبي</span> 🎉</div><div class="act-time">منذ شهر</div></div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="page-header"><div class="page-title"><h1>⚙️ الإعدادات</h1><p>تخصيص حسابك</p></div></div>
+      <div class="section-card">
+        <div style="padding:28px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:18px;background:#fafaf8;border-radius:12px;border:1.5px solid var(--card-border)"><div><div style="font-size:14px;font-weight:700">إشعارات البريد الإلكتروني</div><div style="font-size:12px;color:#aaa;margin-top:3px">استقبل تحديثات تبرعاتك</div></div><div style="width:44px;height:24px;background:var(--green-mid);border-radius:30px;position:relative;cursor:pointer"><div style="width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.2s"></div></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:18px;background:#fafaf8;border-radius:12px;border:1.5px solid var(--card-border)"><div><div style="font-size:14px;font-weight:700">إشعارات الواتساب</div><div style="font-size:12px;color:#aaa;margin-top:3px">تنبيهات فورية على هاتفك</div></div><div style="width:44px;height:24px;background:#ddd;border-radius:30px;position:relative;cursor:pointer"><div style="width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;right:3px;transition:.2s"></div></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:18px;background:#fafaf8;border-radius:12px;border:1.5px solid var(--card-border)"><div><div style="font-size:14px;font-weight:700">إخفاء اسمي في لوحة المتبرعين</div><div style="font-size:12px;color:#aaa;margin-top:3px">يظهر اسمك كـ "متبرع مجهول"</div></div><div style="width:44px;height:24px;background:#ddd;border-radius:30px;position:relative;cursor:pointer"><div style="width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;right:3px;transition:.2s"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="f-logo">Na<span>bd</span></span>
+      <p>منصتك الموثوقة للتبرع الشفاف والمؤثر. نربط المانحين بالمحتاجين بكل أمانة وشفافية.</p>
+    </div>
+    <div class="f-col"><h4>روابط سريعة</h4><ul><li><a href="index.html">الرئيسية</a></li><li><a href="index.html#project">المشاريع</a></li><li><a href="index.html#story">قصص النجاح</a></li><li><a href="#">من نحن</a></li></ul></div>
+    <div class="f-col"><h4>أقسام التبرع</h4><ul><li><a href="#">تعليم</a></li><li><a href="#">صحة</a></li><li><a href="#">مياه</a></li><li><a href="#">أيتام</a></li></ul></div>
+    <div class="f-col"><h4>تواصل معنا</h4><ul><li><a href="#">الدعم الفني</a></li><li><a href="#">البريد الإلكتروني</a></li><li><a href="#">سياسة الخصوصية</a></li><li><a href="#">الشروط والأحكام</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 CO.Gr — جميع الحقوق محفوظة</p>
+    <div class="socials"><a href="#">𝕏</a><a href="#">in</a><a href="#">f</a><a href="#">▶</a></div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   SPA NAVIGATION
+============================================================ */
+function navigateTo(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const t = document.getElementById('page-' + pageId);
+  if (t) { t.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  const a = document.querySelector(`.sidebar-link[data-page="${pageId}"]`);
+  if (a) a.classList.add('active');
+  if (pageId === 'dashboard') {
+    setTimeout(() => {
+      document.querySelectorAll('#page-dashboard .counter').forEach(el => {
+        if (!el.dataset.counted) { el.dataset.counted='1'; animateCounter(el); }
+      });
+    }, 100);
+  }
+}
+document.querySelectorAll('.sidebar-link[data-page]').forEach(link => {
+  link.addEventListener('click', function() {
+    const p = this.dataset.page;
+    if (p === 'logout') { if (confirm('هل تريد تسجيل الخروج؟')) window.location.href='login.html'; return; }
+    navigateTo(p);
+  });
+});
+document.querySelectorAll('[data-goto]').forEach(btn => {
+  btn.addEventListener('click', function() { navigateTo(this.dataset.goto); });
+});
+window.addEventListener('load', () => {
+  document.querySelectorAll('#page-dashboard .counter').forEach(el => {
+    el.dataset.counted='1'; animateCounter(el);
+  });
+});
+
+/* ============================================================
+   COUNTERS
+============================================================ */
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const steps  = 60, increment = target / steps;
+  let step = 0;
+  const t = setInterval(() => {
+    step++;
+    const cur = Math.min(Math.round(increment * step), target);
+    el.textContent = cur.toLocaleString('ar-EG') + suffix;
+    if (cur >= target) clearInterval(t);
+  }, 2000 / steps);
+}
+
+/* ============================================================
+   PANELS
+============================================================ */
+let openPanel = null;
+
+function togglePanel(type) {
+  if (openPanel === type) { closePanel(type); return; }
+  if (openPanel) closePanel(openPanel);
+  openPanel = type;
+  document.getElementById(type==='notif'?'notifPanel':'msgPanel').classList.add('open');
+  document.getElementById(type==='notif'?'btnNotif':'btnMsg').classList.add('active');
+}
+
+function closePanel(type) {
+  document.getElementById(type==='notif'?'notifPanel':'msgPanel').classList.remove('open');
+  document.getElementById(type==='notif'?'btnNotif':'btnMsg').classList.remove('active');
+  if (openPanel === type) openPanel = null;
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.fpanel') && !e.target.closest('.nav-btn')) {
+    if (openPanel) closePanel(openPanel);
+  }
+});
+
+function readNi(el) { el.classList.remove('unread'); refreshNotifCount(); }
+function markAllNotifs() {
+  document.querySelectorAll('#notifList .ni.unread').forEach(n => n.classList.remove('unread'));
+  refreshNotifCount();
+  showToast('✅ تم تحديد الكل كمقروء');
+}
+function refreshNotifCount() {
+  const n = document.querySelectorAll('#notifList .ni.unread').length;
+  const b = document.getElementById('notifBadge');
+  const c = document.getElementById('notifCnt');
+  if (n > 0) { b.textContent=n; b.style.display=''; c.textContent=n; c.style.display=''; }
+  else       { b.style.display='none'; c.style.display='none'; }
+}
+
+function readMi(el) { el.classList.remove('unread'); refreshMsgCount(); }
+function markAllMsgs() {
+  document.querySelectorAll('#msgList .mi.unread').forEach(m => m.classList.remove('unread'));
+  refreshMsgCount();
+  showToast('✅ تم تحديد الكل كمقروء');
+}
+function refreshMsgCount() {
+  const n = document.querySelectorAll('#msgList .mi.unread').length;
+  const b = document.getElementById('msgBadge');
+  const c = document.getElementById('msgCnt');
+  if (n > 0) { b.textContent=n; b.style.display=''; c.textContent=n; c.style.display=''; }
+  else       { b.style.display='none'; c.style.display='none'; }
+}
+
+/* ============================================================
+   DONATE MODAL (للأزرار اللي لسه بتستخدم المودال لو محتاجها)
+============================================================ */
+const D = { camp:'مدرسة الأطفال المحرومين', campIco:'📚', amount:100, pay:'بطاقة بنكية' };
+
+function openDonate() {
+  if (openPanel) closePanel(openPanel);
+  resetDonate();
+  document.getElementById('donateOv').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeDonate() {
+  document.getElementById('donateOv').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function resetDonate() {
+  Object.assign(D, { camp:'مدرسة الأطفال المحرومين', campIco:'📚', amount:100, pay:'بطاقة بنكية' });
+  goStep(1, true);
+  document.querySelectorAll('.camp-opt').forEach((o,i)=>{
+    o.classList.toggle('sel',i===0);
+    o.querySelector('.co-check').textContent = i===0?'✓':'';
+  });
+  document.querySelectorAll('.amt-chip').forEach((c,i)=>c.classList.toggle('sel',i===1));
+  document.getElementById('customAmt').value='';
+  document.querySelectorAll('.pay-method').forEach((m,i)=>{
+    m.classList.toggle('sel',i===0);
+    m.querySelector('.pay-check').textContent=i===0?'✓':'';
+  });
+}
+
+function goStep(n, silent) {
+  document.querySelectorAll('.dm-step').forEach((s,i)=>s.classList.toggle('active',i+1===n));
+  for(let i=1;i<=3;i++){
+    const d=document.getElementById('sd'+i);
+    d.classList.remove('done','active');
+    if(i<n) d.classList.add('done');
+    else if(i===n) d.classList.add('active');
+  }
+  for(let i=1;i<=2;i++) document.getElementById('sl'+i).classList.toggle('done',i<n);
+  if(n===3 && !silent) buildSummary();
+}
+
+function selCamp(el,ico,name) {
+  document.querySelectorAll('.camp-opt').forEach(o=>{ o.classList.remove('sel'); o.querySelector('.co-check').textContent=''; });
+  el.classList.add('sel'); el.querySelector('.co-check').textContent='✓';
+  D.camp=name; D.campIco=ico;
+}
+function selAmt(el, val) {
+  document.querySelectorAll('.amt-chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  if(val!==null){ D.amount=val; document.getElementById('customAmt').value=''; }
+  else document.getElementById('customAmt').focus();
+}
+function onCustomAmt(inp) {
+  const v=parseInt(inp.value);
+  if(v>0){ D.amount=v; document.querySelectorAll('.amt-chip').forEach(c=>c.classList.remove('sel')); }
+}
+function selPay(el) {
+  document.querySelectorAll('.pay-method').forEach(m=>{ m.classList.remove('sel'); m.querySelector('.pay-check').textContent=''; });
+  el.classList.add('sel'); el.querySelector('.pay-check').textContent='✓';
+  D.pay=el.querySelector('.pay-name').textContent;
+}
+function buildSummary() {
+  const cv=parseInt(document.getElementById('customAmt').value);
+  if(cv>0) D.amount=cv;
+  document.getElementById('sumCamp').textContent  = D.camp;
+  document.getElementById('sumAmt').textContent   = D.amount.toLocaleString('ar-EG')+' ر.س';
+  document.getElementById('sumPay').textContent   = D.pay;
+  document.getElementById('sumTotal').textContent = D.amount.toLocaleString('ar-EG')+' ر.س';
+}
+function completeDonate() {
+  document.getElementById('successAmt').textContent  = D.amount.toLocaleString('ar-EG')+' ر.س';
+  document.getElementById('successProj').textContent = D.campIco+' '+D.camp;
+  document.querySelectorAll('.dm-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('dms4').classList.add('active');
+  for(let i=1;i<=3;i++){ const d=document.getElementById('sd'+i); d.classList.remove('active'); d.classList.add('done'); }
+  document.getElementById('sl1').classList.add('done');
+  document.getElementById('sl2').classList.add('done');
+  showToast('💚 تم التبرع بنجاح! جزاك الله خيراً');
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') { closeDonate(); if(openPanel) closePanel(openPanel); }
+});
+</script>
+</body>
+</html>

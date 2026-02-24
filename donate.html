@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nabd — تبرع الآن</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green-dark:  #0d4a27;
+      --green-hero:  #1a6b3c;
+      --green-mid:   #2e8b57;
+      --green-stats: #5cb85c;
+      --cream:       #f5f0e4;
+      --gold:        #c8a84b;
+      --gold-btn:    #b8943a;
+      --white:       #ffffff;
+      --text-dark:   #1a1a1a;
+      --text-gray:   #555;
+      --card-border: #e0ddd4;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+      background: var(--cream);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ===================== NAVBAR ===================== */
+    .navbar {
+      background: var(--green-dark);
+      padding: 0 60px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 16px rgba(0,0,0,.25);
+    }
+    .logo { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 1px; text-decoration: none; }
+    .logo span { color: var(--gold); }
+    .nav-back {
+      display: flex; align-items: center; gap: 8px;
+      color: rgba(255,255,255,.75); font-size: 13.5px; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--gold); }
+
+    /* ===================== HERO BANNER ===================== */
+    .donate-hero {
+      background: linear-gradient(160deg, #0b3d22 0%, #145e33 40%, #1e7a42 70%, #2a8f50 100%);
+      padding: 48px 80px 56px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .donate-hero::before {
+      content:'';position:absolute;top:-80px;right:-80px;
+      width:500px;height:500px;
+      background:radial-gradient(circle,rgba(100,200,120,.15) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .donate-hero::after {
+      content:'';position:absolute;bottom:-60px;left:-60px;
+      width:400px;height:400px;
+      background:radial-gradient(circle,rgba(200,168,75,.1) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .donate-hero-inner { position:relative;z-index:2; }
+    .donate-hero h1 {
+      font-size: 38px; font-weight: 900; color: #fff;
+      margin-bottom: 10px;
+    }
+    .donate-hero p {
+      font-size: 15px; color: rgba(255,255,255,.7);
+      max-width: 520px; margin: 0 auto; line-height: 1.9;
+    }
+    .hero-steps {
+      display: flex; justify-content: center; gap: 10px;
+      margin-top: 28px; flex-wrap: wrap;
+    }
+    .hero-step {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 30px; padding: 8px 18px;
+      font-size: 13px; color: rgba(255,255,255,.85); font-weight: 600;
+    }
+    .hero-step.active-step {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #fff; font-weight: 800;
+    }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900;
+    }
+    .hero-step.active-step .step-num { background: rgba(255,255,255,.3); }
+    .step-divider { color: rgba(255,255,255,.3); font-size: 18px; }
+
+    /* wave */
+    .wave-wrap { line-height:0; }
+    .wave-wrap svg { width:100%; display:block; }
+
+    /* ===================== MAIN WRAPPER ===================== */
+    .donate-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ===================== STEP CARDS ===================== */
+    .step-card {
+      background: var(--white);
+      border-radius: 22px;
+      border: 1.5px solid var(--card-border);
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.05);
+      transition: box-shadow .3s;
+    }
+    .step-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.08); }
+
+    .card-head {
+      display: flex; align-items: center; gap: 14px;
+      padding: 20px 26px;
+      border-bottom: 1px solid #f5f0e8;
+      background: #fdfcfa;
+    }
+    .card-head-num {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      color: #fff; font-size: 16px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-head h2 { font-size: 17px; font-weight: 800; color: var(--text-dark); }
+    .card-head p { font-size: 12.5px; color: #aaa; margin-top: 2px; }
+
+    .card-body { padding: 28px 26px; }
+
+    /* ===================== TYPE SELECTOR ===================== */
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .type-card {
+      border: 2px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      background: #fafaf8;
+      position: relative;
+      user-select: none;
+    }
+    .type-card:hover { border-color: var(--green-mid); background: #f9fffe; transform: translateY(-2px); }
+    .type-card.selected {
+      border-color: var(--green-mid);
+      background: #f0fff6;
+      box-shadow: 0 0 0 4px rgba(46,139,87,.1);
+    }
+
+    .type-check {
+      position: absolute; top: 12px; left: 12px;
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--card-border);
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 900; color: #fff;
+      transition: all .2s;
+    }
+    .type-card.selected .type-check {
+      background: var(--green-mid); border-color: var(--green-mid);
+    }
+    .type-check::after { content: '✓'; opacity: 0; transition: opacity .2s; }
+    .type-card.selected .type-check::after { opacity: 1; }
+
+    .type-emoji {
+      width: 68px; height: 68px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin: 0 auto 14px;
+      transition: background .25s;
+    }
+    .type-card:nth-child(1) .type-emoji { background: #fff3e0; }
+    .type-card:nth-child(2) .type-emoji { background: #e8f5e9; }
+    .type-card:nth-child(3) .type-emoji { background: #e8f0fe; }
+    .type-card:nth-child(4) .type-emoji { background: #e3f2fd; }
+    .type-card.selected .type-emoji { filter: brightness(1.05); }
+
+    .type-card h3 { font-size: 15px; font-weight: 800; color: var(--text-dark); margin-bottom: 5px; }
+    .type-card p { font-size: 12px; color: #aaa; line-height: 1.6; }
+
+    /* ===================== FORM FIELDS ===================== */
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; font-size: 13.5px; font-weight: 700;
+      color: var(--text-dark); margin-bottom: 8px;
+    }
+    .form-group label span { color: #e53935; margin-right: 2px; }
+    .form-input {
+      width: 100%; padding: 13px 16px;
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      font-family: 'Cairo', sans-serif; font-size: 14px;
+      color: var(--text-dark); background: #fafafa;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+      outline: none; text-align: right;
+    }
+    .form-input:focus {
+      border-color: var(--green-mid);
+      box-shadow: 0 0 0 3px rgba(46,139,87,.1);
+      background: #fff;
+    }
+    .form-input::placeholder { color: #ccc; }
+    textarea.form-input { resize: vertical; min-height: 90px; }
+    select.form-input { cursor: pointer; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* qty / condition row */
+    .input-hint { font-size: 11.5px; color: #bbb; margin-top: 6px; }
+
+    /* ===================== IMAGE UPLOAD ===================== */
+    .upload-zone {
+      border: 2px dashed var(--card-border);
+      border-radius: 16px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      background: #fafaf8;
+      position: relative;
+    }
+    .upload-zone:hover { border-color: var(--green-mid); background: #f9fffe; }
+    .upload-zone.dragover { border-color: var(--green-mid); background: #f0fff6; transform: scale(1.01); }
+    .upload-zone.has-images { border-color: var(--green-stats); background: #f0fff6; }
+
+    .upload-icon { font-size: 40px; display: block; margin-bottom: 10px; }
+    .upload-zone h4 { font-size: 14px; font-weight: 800; color: var(--text-dark); margin-bottom: 5px; }
+    .upload-zone p { font-size: 12px; color: #bbb; }
+    .upload-link { color: var(--green-mid); font-weight: 700; text-decoration: underline; }
+
+    #fileInput { display: none; }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .preview-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      border: 2px solid #e8f5e9;
+    }
+    .preview-item img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .preview-remove {
+      position: absolute; top: 4px; left: 4px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(229,57,53,.85); color: #fff;
+      font-size: 12px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none;
+      transition: background .2s; line-height: 1;
+    }
+    .preview-remove:hover { background: #c62828; }
+
+    /* ===================== MONEY SECTION ===================== */
+    .money-section { display: none; }
+    .money-section.show { display: block; }
+
+    .amount-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .amount-btn {
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      font-size: 15px; font-weight: 800;
+      color: var(--text-dark); background: #fafafa;
+      transition: all .2s;
+    }
+    .amount-btn:hover { border-color: var(--green-mid); color: var(--green-mid); background: #f9fffe; }
+    .amount-btn.selected {
+      border-color: var(--green-mid); color: var(--green-mid);
+      background: #f0fff6; box-shadow: 0 0 0 3px rgba(46,139,87,.1);
+    }
+    .amount-btn span { display: block; font-size: 11px; color: #bbb; font-weight: 600; margin-top: 2px; }
+
+    .amount-custom-wrap { position: relative; }
+    .amount-custom-wrap .form-input { padding-left: 55px; }
+    .currency-badge {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: #f0f0f0; border: 1.5px solid var(--card-border);
+      border-radius: 0 12px 12px 0; /* left side rounded for RTL */
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 14px; font-size: 13px; font-weight: 800;
+      color: #888; border-right: none;
+    }
+
+    .payment-methods { display: flex; gap: 12px; flex-wrap: wrap; }
+    .pay-method {
+      flex: 1; min-width: 100px;
+      border: 2px solid var(--card-border);
+      border-radius: 12px; padding: 12px 10px;
+      text-align: center; cursor: pointer;
+      font-family: 'Cairo', sans-serif; font-size: 12px;
+      font-weight: 700; color: #777; background: #fafafa;
+      transition: all .2s; display: flex; align-items: center;
+      justify-content: center; gap: 7px;
+    }
+    .pay-method:hover { border-color: var(--green-mid); color: var(--green-mid); background: #f9fffe; }
+    .pay-method.selected {
+      border-color: var(--green-mid); color: var(--green-mid);
+      background: #f0fff6; box-shadow: 0 0 0 3px rgba(46,139,87,.1);
+    }
+    .pay-icon { font-size: 18px; }
+
+    /* ===================== ITEMS SECTION (extra goods) ===================== */
+    .items-section { display: none; }
+    .items-section.show { display: block; }
+
+    .item-tag-grid {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+    }
+    .item-tag {
+      border: 1.5px solid var(--card-border);
+      border-radius: 25px; padding: 7px 16px;
+      font-family: 'Cairo', sans-serif; font-size: 12.5px;
+      font-weight: 700; color: #777; background: #fafafa;
+      cursor: pointer; transition: all .2s;
+    }
+    .item-tag:hover { border-color: var(--green-mid); color: var(--green-mid); }
+    .item-tag.selected {
+      border-color: var(--green-mid); color: var(--green-mid);
+      background: #f0fff6;
+    }
+
+    /* ===================== SUMMARY BOX ===================== */
+    .summary-box {
+      background: linear-gradient(135deg, #f0fff6, #f5fff8);
+      border: 1.5px solid #b2dfdb;
+      border-radius: 16px; padding: 20px 22px;
+      margin-bottom: 20px;
+    }
+    .summary-box h4 { font-size: 14px; font-weight: 800; color: var(--green-dark); margin-bottom: 14px; }
+    .sum-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; color: var(--text-gray);
+      padding: 7px 0; border-bottom: 1px dashed #d0eed8;
+    }
+    .sum-row:last-child { border-bottom: none; color: var(--green-dark); font-weight: 800; font-size: 15px; }
+    .sum-row span:last-child { font-weight: 700; color: var(--text-dark); }
+    .sum-row:last-child span:last-child { color: var(--green-mid); }
+
+    /* ===================== SUBMIT AREA ===================== */
+    .submit-area { text-align: center; }
+
+    .terms-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 12.5px; color: #888; margin-bottom: 22px;
+      text-align: right; justify-content: center;
+    }
+    .terms-row input[type="checkbox"] {
+      width: 16px; height: 16px; accent-color: var(--green-mid);
+      flex-shrink: 0; margin-top: 2px; cursor: pointer;
+    }
+    .terms-row a { color: var(--green-mid); font-weight: 700; text-decoration: none; }
+
+    .btn-submit {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      color: #fff; border: none; border-radius: 14px;
+      font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 900;
+      cursor: pointer; transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 6px 24px rgba(46,139,87,.4);
+      letter-spacing: .5px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(46,139,87,.5); }
+    .btn-submit:active { transform: translateY(0); }
+
+    /* ===================== SUCCESS OVERLAY ===================== */
+    .success-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .success-overlay.show { display: flex; }
+
+    .success-card {
+      background: var(--white); border-radius: 24px;
+      padding: 50px 40px; text-align: center;
+      max-width: 420px; width: 90%;
+      box-shadow: 0 30px 80px rgba(0,0,0,.3);
+      animation: popIn .4s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .success-icon {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-stats), var(--green-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 42px; margin: 0 auto 22px;
+      box-shadow: 0 10px 30px rgba(46,139,87,.4);
+      animation: bounce .5s ease .3s both;
+    }
+    @keyframes bounce {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+    .success-card h2 { font-size: 24px; font-weight: 900; color: var(--text-dark); margin-bottom: 10px; }
+    .success-card p { font-size: 14px; color: #888; line-height: 1.8; margin-bottom: 28px; }
+    .success-ref {
+      background: #f5f0e4; border-radius: 10px; padding: 10px 16px;
+      font-size: 13px; font-weight: 700; color: var(--green-dark);
+      margin-bottom: 28px; display: inline-block;
+    }
+    .btn-home {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+      color: #fff; padding: 13px 32px; border-radius: 12px;
+      font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 800;
+      text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(46,139,87,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-home:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(46,139,87,.45); }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 700px) {
+      .navbar { padding: 0 18px; }
+      .donate-hero { padding: 36px 20px 48px; }
+      .donate-hero h1 { font-size: 26px; }
+      .hero-steps { gap: 6px; }
+      .hero-step { font-size: 11.5px; padding: 6px 12px; }
+      .step-divider { display: none; }
+      .card-body { padding: 20px 16px; }
+      .card-head { padding: 16px 18px; }
+      .type-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .form-row { grid-template-columns: 1fr; }
+      .amount-grid { grid-template-columns: repeat(2, 1fr); }
+      .payment-methods { flex-direction: column; }
+    }
+    @media (max-width: 420px) {
+      .type-grid { grid-template-columns: 1fr 1fr; }
+      .type-card { padding: 18px 10px; }
+      .type-emoji { width: 54px; height: 54px; font-size: 26px; }
+    }
+
+    /* ===================== FOOTER ===================== */
+    footer {
+      background: #0a2a17;
+      padding: 55px 80px 28px;
+      direction: rtl;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 50px;
+      max-width: 1100px;
+      margin: 0 auto 44px;
+    }
+    .footer-brand .f-logo {
+      font-size: 24px; font-weight: 900; color: #fff;
+      display: block; margin-bottom: 14px;
+    }
+    .footer-brand .f-logo span { color: var(--gold); }
+    .footer-brand p {
+      font-size: 13.5px; color: rgba(255,255,255,.45);
+      line-height: 1.85; max-width: 240px;
+    }
+    .f-col h4 { font-size: 14.5px; font-weight: 800; color: #fff; margin-bottom: 18px; }
+    .f-col ul { list-style: none; }
+    .f-col ul li { margin-bottom: 9px; }
+    .f-col ul li a {
+      text-decoration: none; font-size: 13.5px;
+      color: rgba(255,255,255,.45); transition: color .2s;
+    }
+    .f-col ul li a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 22px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-bottom p { font-size: 12.5px; color: rgba(255,255,255,.3); }
+    .socials { display: flex; gap: 10px; }
+    .socials a {
+      width: 36px; height: 36px; border-radius: 9px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.5); font-size: 14px;
+      text-decoration: none; transition: background .2s, border-color .2s;
+    }
+    .socials a:hover { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+    @media (max-width: 900px) {
+      footer { padding: 50px 40px 28px; }
+      .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+    }
+    @media (max-width: 600px) {
+      footer { padding: 40px 20px 24px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+      .footer-bottom { flex-direction: column; gap: 18px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="logo">Na<span>bd</span></a>
+  <a href="user.html" class="nav-back">← العودة للوحة التحكم</a>
+</nav>
+
+<!-- HERO -->
+<div class="donate-hero">
+  <div class="donate-hero-inner">
+    <h1>💚 تبرع وأحدث فرقًا</h1>
+    <p>اختر نوع تبرعك وابعث الأمل لمن يحتاجه. كل تبرع، مهما كان، يصنع قصة نجاح جديدة.</p>
+    <div class="hero-steps">
+      <div class="hero-step active-step" id="step-ind-1">
+        <span class="step-num">1</span> نوع التبرع
+      </div>
+      <span class="step-divider">←</span>
+      <div class="hero-step" id="step-ind-2">
+        <span class="step-num">2</span> التفاصيل
+      </div>
+      <span class="step-divider">←</span>
+      <div class="hero-step" id="step-ind-3">
+        <span class="step-num">3</span> الصور
+      </div>
+      <span class="step-divider">←</span>
+      <div class="hero-step" id="step-ind-4">
+        <span class="step-num">4</span> التأكيد
+      </div>
+    </div>
+  </div>
+  <div class="wave-wrap">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 C360,70 1080,-10 1440,30 L1440,60 L0,60 Z" fill="#f5f0e4"/>
+    </svg>
+  </div>
+</div>
+
+<!-- MAIN FORM -->
+<div class="donate-wrap">
+
+  <!-- STEP 1: نوع التبرع -->
+  <div class="step-card">
+    <div class="card-head">
+      <div class="card-head-num">1</div>
+      <div>
+        <h2>ما الذي تريد التبرع به؟</h2>
+        <p>اختر نوع تبرعك — يمكنك اختيار أكثر من نوع</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="type-grid">
+
+        <div class="type-card" data-type="clothes" onclick="toggleType(this)">
+          <div class="type-check"></div>
+          <div class="type-emoji">👕</div>
+          <h3>ملابس</h3>
+          <p>هدوم جديدة أو مستعملة نظيفة لمن يحتاجها</p>
+        </div>
+
+        <div class="type-card" data-type="food" onclick="toggleType(this)">
+          <div class="type-check"></div>
+          <div class="type-emoji">🥗</div>
+          <h3>أكل وغذاء</h3>
+          <p>مواد غذائية أو وجبات لدعم الأسر المحتاجة</p>
+        </div>
+
+        <div class="type-card" data-type="items" onclick="toggleType(this)">
+          <div class="type-check"></div>
+          <div class="type-emoji">📦</div>
+          <h3>أغراض متنوعة</h3>
+          <p>أثاث، أجهزة، كتب، أو أي حاجة زيادة عندك</p>
+        </div>
+
+        <div class="type-card" data-type="money" onclick="toggleType(this)">
+          <div class="type-check"></div>
+          <div class="type-emoji">💵</div>
+          <h3>تبرع مالي</h3>
+          <p>دعم مالي مباشر لمشروع أو حملة تختارها</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: التفاصيل -->
+  <div class="step-card" id="details-card">
+    <div class="card-head">
+      <div class="card-head-num">2</div>
+      <div>
+        <h2>تفاصيل التبرع</h2>
+        <p>أخبرنا أكتر عن تبرعك</p>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- Common fields -->
+      <div class="form-group">
+        <label>اسم المتبرع <span>*</span></label>
+        <input type="text" class="form-input" placeholder="الاسم الكامل" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>رقم الهاتف <span>*</span></label>
+          <input type="tel" class="form-input" placeholder="05XXXXXXXX" />
+        </div>
+        <div class="form-group">
+          <label>المنطقة / المدينة <span>*</span></label>
+          <input type="text" class="form-input" placeholder="مثال: الرياض" />
+        </div>
+      </div>
+
+      <!-- الحملة / المشروع -->
+      <div class="form-group">
+        <label>اختر الحملة أو المشروع</label>
+        <select class="form-input">
+          <option value="">— اختر حملة —</option>
+          <option>مدرسة للأطفال المحرومين 📚</option>
+          <option>عيادة طبية متنقلة 🏥</option>
+          <option>بئر مياه نظيفة 💧</option>
+          <option>اعانة غذائية طارئة 🛒</option>
+          <option>رعاية الأيتام 👦</option>
+          <option>عام (بدون تحديد)</option>
+        </select>
+      </div>
+
+      <!-- CLOTHES fields -->
+      <div id="clothes-fields" class="items-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label>نوع الملابس</label>
+            <select class="form-input">
+              <option>ملابس رجالية</option>
+              <option>ملابس نسائية</option>
+              <option>ملابس أطفال</option>
+              <option>مختلطة</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>الكمية (قطعة / كيس / كرتون)</label>
+            <input type="number" class="form-input" placeholder="مثال: 10" min="1" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>حالة الملابس</label>
+          <div class="item-tag-grid">
+            <div class="item-tag selected" onclick="toggleTag(this)">✨ جديدة</div>
+            <div class="item-tag" onclick="toggleTag(this)">👍 مستعملة - ممتازة</div>
+            <div class="item-tag" onclick="toggleTag(this)">✅ مستعملة - جيدة</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOD fields -->
+      <div id="food-fields" class="items-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label>نوع الغذاء</label>
+            <select class="form-input">
+              <option>مواد غذائية جافة</option>
+              <option>وجبات مطبوخة</option>
+              <option>خضار وفاكهة</option>
+              <option>منتجات ألبان</option>
+              <option>مختلط</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>الكمية</label>
+            <input type="number" class="form-input" placeholder="مثال: 5 كراتين" min="1" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>ملاحظات (تاريخ صلاحية، تخزين...)</label>
+          <textarea class="form-input" placeholder="أي تفاصيل مهمة عن الغذاء..."></textarea>
+        </div>
+      </div>
+
+      <!-- ITEMS fields -->
+      <div id="items-fields" class="items-section">
+        <div class="form-group">
+          <label>نوع الأغراض — اختر كل ما ينطبق</label>
+          <div class="item-tag-grid">
+            <div class="item-tag" onclick="toggleTag(this)">🪑 أثاث</div>
+            <div class="item-tag" onclick="toggleTag(this)">📱 أجهزة إلكترونية</div>
+            <div class="item-tag" onclick="toggleTag(this)">📚 كتب ومواد تعليمية</div>
+            <div class="item-tag" onclick="toggleTag(this)">🧸 العاب أطفال</div>
+            <div class="item-tag" onclick="toggleTag(this)">🛠 أدوات منزلية</div>
+            <div class="item-tag" onclick="toggleTag(this)">👜 حقائب</div>
+            <div class="item-tag" onclick="toggleTag(this)">🩺 مستلزمات طبية</div>
+            <div class="item-tag" onclick="toggleTag(this)">📦 أخرى</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>وصف الأغراض بالتفصيل</label>
+          <textarea class="form-input" placeholder="اوصف الأغراض التي تريد التبرع بها..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>حالة الأغراض</label>
+          <div class="item-tag-grid">
+            <div class="item-tag selected" onclick="toggleTag(this)">✨ جديدة</div>
+            <div class="item-tag" onclick="toggleTag(this)">👍 مستعملة - ممتازة</div>
+            <div class="item-tag" onclick="toggleTag(this)">✅ مستعملة - جيدة</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MONEY fields -->
+      <div id="money-fields" class="money-section">
+        <div class="form-group">
+          <label>اختر المبلغ (ر.س)</label>
+          <div class="amount-grid">
+            <button class="amount-btn" onclick="selectAmount(this, 50)">50 ر.س<span>تبرع رمزي</span></button>
+            <button class="amount-btn" onclick="selectAmount(this, 100)">100 ر.س<span>دعم متوسط</span></button>
+            <button class="amount-btn" onclick="selectAmount(this, 200)">200 ر.س<span>دعم كبير</span></button>
+            <button class="amount-btn" onclick="selectAmount(this, 500)">500 ر.س<span>متبرع فضي</span></button>
+            <button class="amount-btn" onclick="selectAmount(this, 1000)">1,000 ر.س<span>متبرع ذهبي</span></button>
+            <button class="amount-btn" onclick="selectAmount(this, 0)" id="custom-btn">مبلغ آخر<span>حدد بنفسك</span></button>
+          </div>
+          <div class="amount-custom-wrap" id="custom-amount-wrap" style="display:none">
+            <input type="number" class="form-input" id="customAmount" placeholder="أدخل المبلغ" min="1" style="padding-left:65px"/>
+            <span class="currency-badge">ر.س</span>
+          </div>
+          <p class="input-hint">الحد الأدنى للتبرع 10 ر.س</p>
+        </div>
+
+        <div class="form-group">
+          <label>طريقة الدفع <span>*</span></label>
+          <div class="payment-methods">
+            <div class="pay-method selected" onclick="selectPay(this)">
+              <span class="pay-icon">💳</span> بطاقة بنكية
+            </div>
+            <div class="pay-method" onclick="selectPay(this)">
+              <span class="pay-icon">📱</span> Apple Pay
+            </div>
+            <div class="pay-method" onclick="selectPay(this)">
+              <span class="pay-icon">🏦</span> تحويل بنكي
+            </div>
+            <div class="pay-method" onclick="selectPay(this)">
+              <span class="pay-icon">💚</span> STC Pay
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ملاحظة إضافية عامة -->
+      <div class="form-group" id="notes-group">
+        <label>ملاحظات إضافية (اختياري)</label>
+        <textarea class="form-input" placeholder="أي تفاصيل أخرى تريد إضافتها..."></textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 3: رفع الصور -->
+  <div class="step-card" id="photos-card">
+    <div class="card-head">
+      <div class="card-head-num">3</div>
+      <div>
+        <h2>صور التبرع</h2>
+        <p>ارفع صور للأغراض أو مستندات إضافية (اختياري للتبرع المالي)</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="upload-zone" id="uploadZone"
+           onclick="document.getElementById('fileInput').click()"
+           ondragover="handleDrag(event, true)"
+           ondragleave="handleDrag(event, false)"
+           ondrop="handleDrop(event)">
+        <span class="upload-icon">🖼️</span>
+        <h4>اسحب الصور هنا أو <span class="upload-link">اضغط للاختيار</span></h4>
+        <p>PNG، JPG، HEIC — حتى 10 صور، كل صورة أقل من 10MB</p>
+      </div>
+      <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this.files)">
+      <div class="preview-grid" id="previewGrid"></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: ملخص وتأكيد -->
+  <div class="step-card" id="confirm-card">
+    <div class="card-head">
+      <div class="card-head-num">4</div>
+      <div>
+        <h2>مراجعة وتأكيد</h2>
+        <p>تأكد من تفاصيل تبرعك قبل الإرسال</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="summary-box">
+        <h4>📋 ملخص التبرع</h4>
+        <div class="sum-row">
+          <span>نوع التبرع</span>
+          <span id="sum-type">—</span>
+        </div>
+        <div class="sum-row" id="sum-amount-row" style="display:none">
+          <span>المبلغ</span>
+          <span id="sum-amount">—</span>
+        </div>
+        <div class="sum-row">
+          <span>الحملة المستفيدة</span>
+          <span>مدرسة للأطفال المحرومين 📚</span>
+        </div>
+        <div class="sum-row">
+          <span>الصور المرفقة</span>
+          <span id="sum-photos">لا يوجد</span>
+        </div>
+        <div class="sum-row">
+          <span>حالة التبرع بعد الإرسال</span>
+          <span>⏳ قيد المراجعة</span>
+        </div>
+      </div>
+
+      <div class="terms-row">
+        <input type="checkbox" id="termsCheck"/>
+        <label for="termsCheck">أوافق على <a href="#">شروط وأحكام</a> التبرع وسياسة الخصوصية الخاصة بمنصة Nabd</label>
+      </div>
+
+      <div class="submit-area">
+        <button class="btn-submit" onclick="submitDonation()">
+          💚 أرسل تبرعك الآن
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /donate-wrap -->
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">💚</div>
+    <h2>جزاك الله خيرًا!</h2>
+    <p>وصل تبرعك بنجاح. فريق Nabd سيراجعه ويتواصل معك خلال 24 ساعة.</p>
+    <div class="success-ref" id="refNum">رقم المرجع: NBD-2026-XXXX</div>
+    <a href="dashboard.html" class="btn-home">🏠 العودة للوحة التحكم</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="f-logo">Na<span>bd</span></span>
+      <p>منصتك الموثوقة للتبرع الشفاف والمؤثر. نربط المانحين بالمحتاجين بكل أمانة وشفافية.</p>
+    </div>
+    <div class="f-col">
+      <h4>روابط سريعة</h4>
+      <ul>
+        <li><a href="#">الرئيسية</a></li>
+        <li><a href="#">المشاريع</a></li>
+        <li><a href="#">قصص النجاح</a></li>
+        <li><a href="#">من نحن</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h4>أقسام التبرع</h4>
+      <ul>
+        <li><a href="#">تعليم</a></li>
+        <li><a href="#">صحة</a></li>
+        <li><a href="#">مياه</a></li>
+        <li><a href="#">أيتام</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h4>تواصل معنا</h4>
+      <ul>
+        <li><a href="#">الدعم الفني</a></li>
+        <li><a href="#">البريد الإلكتروني</a></li>
+        <li><a href="#">سياسة الخصوصية</a></li>
+        <li><a href="#">الشروط والأحكام</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 CO.Gr — جميع الحقوق محفوظة</p>
+    <div class="socials">
+      <a href="#">𝕏</a>
+      <a href="#">in</a>
+      <a href="#">f</a>
+      <a href="#">▶</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ===== Type selection ===== */
+  const selectedTypes = new Set();
+  const typeLabels = { clothes:'👕 ملابس', food:'🥗 أكل وغذاء', items:'📦 أغراض متنوعة', money:'💵 تبرع مالي' };
+
+  function toggleType(card) {
+    const type = card.dataset.type;
+    if (card.classList.contains('selected')) {
+      card.classList.remove('selected');
+      selectedTypes.delete(type);
+    } else {
+      card.classList.add('selected');
+      selectedTypes.add(type);
+    }
+    updateFields();
+    updateStepIndicators();
+    updateSummary();
+  }
+
+  function updateFields() {
+    // show/hide field groups
+    document.getElementById('clothes-fields').classList.toggle('show', selectedTypes.has('clothes'));
+    document.getElementById('food-fields').classList.toggle('show', selectedTypes.has('food'));
+    document.getElementById('items-fields').classList.toggle('show', selectedTypes.has('items'));
+    document.getElementById('money-fields').classList.toggle('show', selectedTypes.has('money'));
+    // show/hide amount row in summary
+    document.getElementById('sum-amount-row').style.display = selectedTypes.has('money') ? 'flex' : 'none';
+  }
+
+  /* ===== Step indicator glow ===== */
+  function updateStepIndicators() {
+    if (selectedTypes.size > 0) {
+      document.getElementById('step-ind-2').classList.add('active-step');
+      document.getElementById('step-ind-3').classList.add('active-step');
+      document.getElementById('step-ind-4').classList.add('active-step');
+    } else {
+      ['step-ind-2','step-ind-3','step-ind-4'].forEach(id => document.getElementById(id).classList.remove('active-step'));
+    }
+  }
+
+  /* ===== Summary ===== */
+  function updateSummary() {
+    const types = [...selectedTypes].map(t => typeLabels[t]).join(' + ') || '—';
+    document.getElementById('sum-type').textContent = types;
+  }
+
+  /* ===== Amount selection ===== */
+  let selectedAmount = 0;
+  function selectAmount(btn, val) {
+    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    if (val === 0) {
+      document.getElementById('custom-amount-wrap').style.display = 'block';
+      document.getElementById('customAmount').focus();
+      selectedAmount = 0;
+    } else {
+      document.getElementById('custom-amount-wrap').style.display = 'none';
+      selectedAmount = val;
+      document.getElementById('sum-amount').textContent = val.toLocaleString('ar-SA') + ' ر.س';
+    }
+  }
+
+  document.getElementById('customAmount')?.addEventListener('input', function() {
+    selectedAmount = parseFloat(this.value) || 0;
+    document.getElementById('sum-amount').textContent = selectedAmount > 0 ? selectedAmount.toLocaleString('ar-SA') + ' ر.س' : '—';
+  });
+
+  /* ===== Payment selection ===== */
+  function selectPay(el) {
+    document.querySelectorAll('.pay-method').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  /* ===== Tag toggle ===== */
+  function toggleTag(el) {
+    el.classList.toggle('selected');
+  }
+
+  /* ===== File upload ===== */
+  let uploadedFiles = [];
+
+  function handleFiles(files) {
+    const zone = document.getElementById('uploadZone');
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      if (uploadedFiles.length >= 10) break;
+      uploadedFiles.push(file);
+      const reader = new FileReader();
+      reader.onload = (e) => addPreview(e.target.result, uploadedFiles.length - 1);
+      reader.readAsDataURL(file);
+    }
+    zone.classList.add('has-images');
+    document.getElementById('sum-photos').textContent = uploadedFiles.length + ' صورة';
+  }
+
+  function addPreview(src, index) {
+    const grid = document.getElementById('previewGrid');
+    const div = document.createElement('div');
+    div.className = 'preview-item';
+    div.innerHTML = `
+      <img src="${src}" alt="صورة ${index+1}"/>
+      <button class="preview-remove" onclick="removePreview(this, ${index})">✕</button>
+    `;
+    grid.appendChild(div);
+  }
+
+  function removePreview(btn, index) {
+    uploadedFiles.splice(index, 1);
+    btn.closest('.preview-item').remove();
+    document.getElementById('sum-photos').textContent = uploadedFiles.length > 0 ? uploadedFiles.length + ' صورة' : 'لا يوجد';
+    if (uploadedFiles.length === 0) document.getElementById('uploadZone').classList.remove('has-images');
+  }
+
+  function handleDrag(e, entering) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.toggle('dragover', entering);
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  }
+
+  /* ===== Submit ===== */
+  function submitDonation() {
+    if (!document.getElementById('termsCheck').checked) {
+      alert('يرجى الموافقة على الشروط والأحكام أولاً');
+      return;
+    }
+    if (selectedTypes.size === 0) {
+      alert('يرجى اختيار نوع التبرع أولاً');
+      return;
+    }
+    const ref = 'NBD-2026-' + Math.floor(Math.random() * 9000 + 1000);
+    document.getElementById('refNum').textContent = 'رقم المرجع: ' + ref;
+    document.getElementById('successOverlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+</script>
+</body>
+</html>
